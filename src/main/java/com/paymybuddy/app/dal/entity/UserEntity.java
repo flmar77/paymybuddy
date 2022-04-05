@@ -28,5 +28,4 @@ public class UserEntity {
             fetch = FetchType.EAGER)
     @JoinColumn(name = "connector_id")
     private List<ConnectionEntity> connectionsEntity = new ArrayList<>();
-
 }
