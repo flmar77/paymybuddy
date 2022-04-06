@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class pmbController {
 
     @GetMapping("/")
-    public String home() {
+    public String homesignin() {
         return "homesignin";
     }
 
@@ -25,4 +25,10 @@ public class pmbController {
         model.addAttribute("loginError", true);
         return "login";
     }
+
+    @GetMapping("/homesignedin")
+    public String homesignedin() {
+        return "homesignedin";
+    }
+
 }
