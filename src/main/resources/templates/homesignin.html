@@ -8,18 +8,20 @@
 </head>
 <body>
 
-<div class="container">
+<div class="container-lg pt-5">
     <h1>Pay My Buddy</h1>
-    <p>
-        Welcome to the Pay My Buddy application!
-        Get started quickly by signing up or creating an account.
-    </p>
-    <p>
-        <a href="/login" th:href="@{/login}" class="btn btn-large btn-primary">Sign up</a>
-    </p>
-    <p>
-        <a href="/createaccount" th:href="@{/createaccount}" class="btn btn-large btn-primary">Create account</a>
-    </p>
+    <p>Welcome to the Pay My Buddy application!</p>
+    <p>Get started quickly by signing in or creating an account.</p>
+
+    <div class="container-lg d-flex justify-content-around">
+        <div class=" w-25">
+            <a href="/login" th:href="@{/login}" class="btn btn-primary w-100">Sign in</a>
+        </div>
+        <div class=" w-25">
+            <a href="/createaccount" th:href="@{/createaccount}" class="btn btn-primary w-100">Create
+                account</a>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"

@@ -7,70 +7,71 @@
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body>
-<div class="container-lg">
-    <!-- navbar -->
-    <div th:replace="fragments/header :: header"></div>
+<!-- navbar -->
+<div th:replace="fragments/header :: header"></div>
+<!-- breadcrumb -->
+<div class="container-fluid p-3 bg-light">
+    <p><span style="color:#0000FF">home / </span><span style="color:#808080">transfer in</span></p>
+</div>
 
-    <!-- send money -->
-    <div class="container-lg pt-5">
+<!-- send money -->
+<div class="container-lg pt-5">
 
-        <div class="container-lg p-3 d-flex justify-content-between">
-            <h2>Send Money</h2>
-            <button class='btn btn-primary pull-right'>Add connection</button>
+    <div class="container-lg p-3 d-flex justify-content-between">
+        <h2>Send Money</h2>
+        <button class='btn btn-primary'>Add connection</button>
+    </div>
+
+    <div class="d-flex justify-content-around bg-light p-5">
+
+        <div class="dropdown w-25">
+            <button class="btn btn-outline-secondary dropdown-toggle w-100">Select a connection</button>
         </div>
 
-        <div class="d-flex justify-content-around bg-light p-5">
-
-            <div class="dropdown w-25">
-                <button class="btn btn-outline-secondary dropdown-toggle w-100">Select a connection</button>
+        <div class="input-group w-25">
+            <input type="text" class="form-control">
+            <div class="input-group-append">
+                <span class="input-group-text">€</span>
             </div>
+        </div>
 
-            <div class="input-group w-25">
-                <input type="text" class="form-control">
-                <div class="input-group-append">
-                    <span class="input-group-text">€</span>
-                </div>
-            </div>
-
-            <div class="w-25">
-                <button class="btn btn-success w-100">Pay</button>
-            </div>
-
+        <div class="w-25">
+            <button class="btn btn-success w-100">Pay</button>
         </div>
 
     </div>
 
-    <!-- my transactions -->
-    <div class="container-lg pt-5">
+</div>
 
-        <div class="container-lg p-3">
-            <h2>My Transactions</h2>
-        </div>
+<!-- my transactions -->
+<div class="container-lg pt-5">
 
-        <div class="border border-dark">
-            <table class="table table-striped text-center m-0">
-                <thead class="bg-success text-white">
-                <tr>
-                    <th scope="col">Connections</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Amount</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>user to add</td>
-                    <td>desc to add</td>
-                    <td>amount to add</td>
-                </tr>
-                <tr>
-                    <td>user to add</td>
-                    <td>desc to add</td>
-                    <td>amount to add</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="container-lg p-3">
+        <h2>My Transactions</h2>
+    </div>
 
+    <div class="border border-dark">
+        <table class="table table-striped text-center m-0">
+            <thead class="bg-success text-white">
+            <tr>
+                <th scope="col">Connections</th>
+                <th scope="col">Description</th>
+                <th scope="col">Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>user to add</td>
+                <td>desc to add</td>
+                <td>amount to add</td>
+            </tr>
+            <tr>
+                <td>user to add</td>
+                <td>desc to add</td>
+                <td>amount to add</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
 </div>
