@@ -31,4 +31,9 @@ public class pmbController {
         return "homesignedin";
     }
 
+    @GetMapping("/transferin")
+    public String transferin() {
+        return "transferin";
+    }
+
 }
