@@ -7,20 +7,23 @@
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body>
-<div class="container">
-    <h1>Login page</h1>
+<div class="container-lg mt-5 pt-3 bg-light">
 
-    <p th:if="${loginError}" class="error">Wrong user or password</p>
+    <div class="bg-success w-25 p-1 text-center m-auto">
+        <h1>Pay My Buddy</h1>
+    </div>
+
+    <h3 th:if="${loginError}" class="text-danger p-1">Wrong user or password</h3>
 
     <form th:action="@{/login}" method="post">
         <!-- Email input -->
-        <div class="form-outline mb-4">
+        <div class="form-outline">
             <label for="username" class="form-label">Email</label>:
             <input type="text" id="username" name="username" autofocus="autofocus" class="form-control"/> <br/>
         </div>
 
         <!-- Password input -->
-        <div class="form-outline mb-4">
+        <div class="form-outline">
             <label for="password" class="form-label">Password</label>:
             <input type="password" id="password" name="password" class="form-control"/> <br/>
         </div>
@@ -36,7 +39,9 @@
         </div>
 
         <!-- Submit button -->
-        <input type="submit" value="Log in" class="btn btn-primary btn-block mb-4"/>
+        <div class="m-auto w-25">
+            <input type="submit" value="Login" class="btn btn-primary w-100"/>
+        </div>
 
     </form>
 </div>

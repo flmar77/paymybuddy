@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS "user" CASCADE;
+-- TODO : solde ?
 CREATE TABLE "user"
 (
     id       serial PRIMARY KEY,

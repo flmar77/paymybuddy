@@ -36,4 +36,19 @@ public class pmbController {
         return "transferin";
     }
 
+    @GetMapping("/transferout")
+    public String transferout() {
+        return "transferout";
+    }
+
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile";
+    }
+
+    @GetMapping("/contact")
+    public String contact() {
+        return "contact";
+    }
+
 }
