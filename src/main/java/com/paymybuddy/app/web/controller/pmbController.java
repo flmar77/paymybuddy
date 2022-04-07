@@ -13,13 +13,11 @@ public class pmbController {
         return "/visitor/home";
     }
 
-    // Login form
     @RequestMapping("/login")
     public String visitorLogin() {
         return "/visitor/login";
     }
 
-    // Login form with error
     @RequestMapping("/loginerror")
     public String visitorLoginError(Model model) {
         model.addAttribute("loginError", true);
@@ -49,6 +47,11 @@ public class pmbController {
     @GetMapping("/user/contact")
     public String userContact() {
         return "user/contact";
+    }
+
+    @RequestMapping("/logout")
+    public String userLogout() {
+        return "user/logout";
     }
 
 }
