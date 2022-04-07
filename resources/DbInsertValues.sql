@@ -1,6 +1,9 @@
-INSERT INTO "user" (email, password)
-VALUES ('user1@mail.com', 'user1'),
-       ('user2@mail.com', 'user2');
+INSERT INTO "user" (email, password, balance)
+VALUES ('user1@mail.com', 'user1', 500),
+       ('user2@mail.com', 'user2', 1000);
+INSERT INTO authorities (id)
+values (1),
+       (2);
 INSERT INTO "connection" (connector_id, connected_id)
 VALUES (1, 2),
        (2, 1);

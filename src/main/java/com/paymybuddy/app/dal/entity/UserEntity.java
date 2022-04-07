@@ -13,6 +13,7 @@ import java.util.List;
 @Table(name = "user", schema = "public")
 public class UserEntity {
 
+    // TODO : generatedValue strat sequence
     @Id
     @GeneratedValue
     private Integer id;
@@ -22,6 +23,7 @@ public class UserEntity {
     private String password;
 
     // TODO : list<connectedId>
+    // ManyToMany + JoinTable
     @OneToMany(
             cascade = CascadeType.ALL,
             orphanRemoval = true,

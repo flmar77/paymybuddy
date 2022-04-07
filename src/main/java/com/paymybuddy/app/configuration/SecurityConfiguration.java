@@ -1,5 +1,7 @@
 package com.paymybuddy.app.configuration;
 
+import com.paymybuddy.app.domain.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,27 +15,33 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private UserService userService;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     // TODO : use DB account
+    // UserDetailsService
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
                 .withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN");
+        auth.userDetailsService(userService)
+                .passwordEncoder(passwordEncoder());
     }
 
-    // TODO : limit access
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                //.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/*").permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/loginerror").permitAll()
                 .antMatchers("/visitor/*").permitAll()
-                .antMatchers("/user/*").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

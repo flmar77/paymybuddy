@@ -1,10 +1,20 @@
 DROP TABLE IF EXISTS "user" CASCADE;
--- TODO : solde ?
+-- TODO : "random" sequence
 CREATE TABLE "user"
 (
     id       serial PRIMARY KEY,
-    email    text UNIQUE NOT NULL,
-    password text        NOT NULL
+    email    text UNIQUE    NOT NULL,
+    password text           NOT NULL,
+    enabled  bool           NOT NULL DEFAULT true,
+    balance  numeric(22, 2) NOT NULL CHECK ( balance > 0 )
+);
+
+DROP TABLE IF EXISTS authorities CASCADE;
+CREATE TABLE authorities
+(
+    id        int  NOT NULL,
+    authority text NOT NULL DEFAULT 'USER',
+    FOREIGN KEY (id) REFERENCES "user" (id)
 );
 
 DROP TABLE IF EXISTS connection CASCADE;
@@ -29,7 +39,7 @@ CREATE TABLE transaction
 );
 
 DROP TABLE IF EXISTS in_transaction CASCADE;
--- TODO : given_amount could be + or -
+-- TODO : connectedId
 CREATE TABLE in_transaction
 (
     id           int UNIQUE     NOT NULL PRIMARY KEY,

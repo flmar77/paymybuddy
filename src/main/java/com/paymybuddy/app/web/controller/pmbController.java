@@ -5,6 +5,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+// TODO : binding result pour vérifier les formulaires
+
 @Controller
 public class pmbController {
 

@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+// TODO : delete
+
 @Getter
 @Setter
 @Entity
