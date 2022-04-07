@@ -9,46 +9,46 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class pmbController {
 
     @GetMapping("/")
-    public String homesignin() {
-        return "homesignin";
+    public String visitorHome() {
+        return "/visitor/home";
     }
 
     // Login form
     @RequestMapping("/login")
-    public String login() {
-        return "login";
+    public String visitorLogin() {
+        return "/visitor/login";
     }
 
     // Login form with error
     @RequestMapping("/loginerror")
-    public String loginError(Model model) {
+    public String visitorLoginError(Model model) {
         model.addAttribute("loginError", true);
-        return "login";
+        return "/visitor/login";
     }
 
-    @GetMapping("/homesignedin")
-    public String homesignedin() {
-        return "homesignedin";
+    @GetMapping("/user/home")
+    public String userHome() {
+        return "/user/home";
     }
 
-    @GetMapping("/transferin")
-    public String transferin() {
-        return "transferin";
+    @GetMapping("/user/transferin")
+    public String userTransferIn() {
+        return "/user/transferin";
     }
 
-    @GetMapping("/transferout")
-    public String transferout() {
-        return "transferout";
+    @GetMapping("/user/transferout")
+    public String userTransferOut() {
+        return "/user/transferout";
     }
 
-    @GetMapping("/profile")
-    public String profile() {
-        return "profile";
+    @GetMapping("/user/profile")
+    public String userProfile() {
+        return "/user/profile";
     }
 
-    @GetMapping("/contact")
-    public String contact() {
-        return "contact";
+    @GetMapping("/user/contact")
+    public String userContact() {
+        return "user/contact";
     }
 
 }
