@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS "user" CASCADE;
+-- TODO : solde ?
 CREATE TABLE "user"
 (
     id       serial PRIMARY KEY,
@@ -28,6 +29,7 @@ CREATE TABLE transaction
 );
 
 DROP TABLE IF EXISTS in_transaction CASCADE;
+-- TODO : given_amount could be + or -
 CREATE TABLE in_transaction
 (
     id           int UNIQUE     NOT NULL PRIMARY KEY,
