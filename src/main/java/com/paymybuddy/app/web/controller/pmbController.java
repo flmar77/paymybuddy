@@ -34,6 +34,11 @@ public class pmbController {
         return "/user/transferin";
     }
 
+    @GetMapping("/user/connection")
+    public String userConnection() {
+        return "/user/connection";
+    }
+
     @GetMapping("/user/transferout")
     public String userTransferOut() {
         return "/user/transferout";
