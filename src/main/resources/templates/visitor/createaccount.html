@@ -2,19 +2,16 @@
 <html lang="en-us">
 <head>
     <meta charset="UTF-8"/>
-    <title>Pay My Buddy - Login</title>
+    <title>Pay My Buddy - Create Account</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body>
-<div class="container-lg mt-5 pt-3 bg-light">
+<div class="container-lg mt-5 p-3 bg-light">
 
     <div class="bg-success w-25 p-1 text-center m-auto">
         <h1>Pay My Buddy</h1>
     </div>
-
-    <h3 th:if="${loginError}" class="text-danger p-1">Wrong user or password</h3>
-    <h3 th:if="${createdaccount}" class="text-success p-1">Account created - please log in</h3>
 
     <form th:action="@{/login}" method="post">
         <!-- Email input -->
@@ -29,19 +26,9 @@
             <input type="password" id="password" name="password" class="form-control"/> <br/>
         </div>
 
-        <!-- Remember me -->
-        <div class="row mb-4">
-            <div class="col d-flex justify-content-center">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="rememberMe" checked/>
-                    <label class="form-check-label" for="rememberMe"> Remember me </label>
-                </div>
-            </div>
-        </div>
-
         <!-- Submit button -->
         <div class="m-auto w-25">
-            <input type="submit" value="Login" class="btn btn-primary w-100"/>
+            <a href="/visitor/createdaccount" class="btn btn-primary w-100 p-3">Create account</a>
         </div>
 
     </form>

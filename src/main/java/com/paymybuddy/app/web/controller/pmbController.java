@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class pmbController {
 
+    // visitor
     @GetMapping("/")
     public String visitorHome() {
         return "/visitor/home";
@@ -24,6 +25,18 @@ public class pmbController {
         return "/visitor/login";
     }
 
+    @RequestMapping("/visitor/createaccount")
+    public String visitorCreateAccount() {
+        return "/visitor/createaccount";
+    }
+
+    @RequestMapping("/visitor/createdaccount")
+    public String visitorCreatedAccount(Model model) {
+        model.addAttribute("createdaccount", true);
+        return "/visitor/login";
+    }
+
+    // user
     @GetMapping("/user/home")
     public String userHome() {
         return "/user/home";
