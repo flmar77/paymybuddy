@@ -6,7 +6,7 @@ CREATE TABLE "user"
     email    text UNIQUE    NOT NULL,
     password text           NOT NULL,
     enabled  bool           NOT NULL DEFAULT true,
-    balance  numeric(22, 2) NOT NULL CHECK ( balance > 0 )
+    balance  numeric(22, 2) NOT NULL CHECK ( balance >= 0 )
 );
 
 DROP TABLE IF EXISTS authority CASCADE;

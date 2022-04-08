@@ -4,7 +4,11 @@ import com.paymybuddy.app.dal.entity.AuthorityEntity;
 import com.paymybuddy.app.dal.entity.InTransactionEntity;
 import com.paymybuddy.app.dal.entity.OutTransactionEntity;
 import com.paymybuddy.app.dal.entity.UserEntity;
+import com.paymybuddy.app.dal.repository.AuthorityRepository;
 import com.paymybuddy.app.dal.repository.UserRepository;
+import com.paymybuddy.app.domain.model.InTransactionModel;
+import com.paymybuddy.app.domain.model.OutTransactionModel;
+import com.paymybuddy.app.domain.model.UserModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,9 +18,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityExistsException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -24,6 +30,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private AuthorityRepository authorityRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -63,6 +72,72 @@ public class UserService implements UserDetailsService {
             log.debug(message);
         }
         return userEntityList;
+    }
+
+    @Transactional
+    public UserModel createUser(UserModel userModel) throws EntityExistsException {
+        if (userRepository.findByEmail(userModel.getEmail()).isPresent()) {
+            throw new EntityExistsException();
+        }
+        UserEntity userEntity = new UserEntity();
+        userEntity.setEmail(userModel.getEmail());
+        userEntity.setPassword(userModel.getPassword());
+        userEntity.setEnabled(true);
+        UserEntity userEntity1 = userRepository.save(userEntity);
+
+        AuthorityEntity authorityEntity = new AuthorityEntity();
+        authorityEntity.setUserId(userEntity1.getId());
+        authorityEntity.setAuthority("USER");
+        authorityRepository.save(authorityEntity);
+
+        return mapUserEntityToUserModel(userEntity1);
+    }
+
+    private UserModel mapUserEntityToUserModel(UserEntity userEntity) {
+        UserModel userModel = new UserModel();
+        userModel.setId(userEntity.getId());
+        userModel.setEmail(userEntity.getEmail());
+        userModel.setPassword(userEntity.getPassword());
+        userModel.setConnectedEmails(userEntity.getConnectedUsers().stream()
+                .map(UserEntity::getEmail)
+                .collect(Collectors.toList()));
+        userModel.setInTransactionModelList(mapInTransactionEntityToInTransactionModel(userEntity.getInTransactionEntityList()));
+        userModel.setOutTransactionModelList(mapOutTransactionEntityToOuTransactionModel(userEntity.getOutTransactionEntityList()));
+        return userModel;
+    }
+
+    private List<InTransactionModel> mapInTransactionEntityToInTransactionModel(List<InTransactionEntity> inTransactionEntityList) {
+        if (inTransactionEntityList == null) {
+            return null;
+        }
+        return inTransactionEntityList.stream()
+                .map(inTransactionEntity -> {
+                    InTransactionModel inTransactionModel = new InTransactionModel();
+                    inTransactionModel.setId(inTransactionEntity.getId());
+                    inTransactionModel.setDescription(inTransactionEntity.getDescription());
+                    inTransactionModel.setMonetizedAmount(inTransactionEntity.getMonetizedAmount());
+                    inTransactionModel.setGivenAmount(inTransactionEntity.getGivenAmount());
+                    inTransactionModel.setConnectedId(inTransactionEntity.getConnectedId());
+                    return inTransactionModel;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<OutTransactionModel> mapOutTransactionEntityToOuTransactionModel(List<OutTransactionEntity> outTransactionEntityList) {
+        if (outTransactionEntityList == null) {
+            return null;
+        }
+        return outTransactionEntityList.stream()
+                .map(outTransactionEntity -> {
+                    OutTransactionModel outTransactionModel = new OutTransactionModel();
+                    outTransactionModel.setId(outTransactionEntity.getId());
+                    outTransactionModel.setDescription(outTransactionEntity.getDescription());
+                    outTransactionModel.setMonetizedAmount(outTransactionEntity.getMonetizedAmount());
+                    outTransactionModel.setTransferredAmount(outTransactionEntity.getTransferredAmount());
+                    outTransactionModel.setIban(outTransactionEntity.getIban());
+                    return outTransactionModel;
+                })
+                .collect(Collectors.toList());
     }
 
 }
