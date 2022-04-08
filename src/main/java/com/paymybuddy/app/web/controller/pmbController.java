@@ -27,6 +27,12 @@ public class pmbController {
         return "/visitor/login";
     }
 
+    @RequestMapping("/loginlogout")
+    public String visitorLoginLogout(Model model) {
+        model.addAttribute("loginLogout", true);
+        return "/visitor/login";
+    }
+
     @RequestMapping("/visitor/createaccount")
     public String visitorCreateAccount() {
         return "/visitor/createaccount";
@@ -67,11 +73,6 @@ public class pmbController {
     @GetMapping("/user/contact")
     public String userContact() {
         return "user/contact";
-    }
-
-    @RequestMapping("/logout")
-    public String userLogout() {
-        return "user/logout";
     }
 
 }

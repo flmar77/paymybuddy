@@ -27,7 +27,7 @@ public class UserEntity {
     private float balance;
 
     @ManyToMany(
-            fetch = FetchType.EAGER,
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL
     )
     @JoinTable(name = "connection",
@@ -37,15 +37,22 @@ public class UserEntity {
     private List<UserEntity> connectedUsers = new ArrayList<>();
 
     @OneToMany(
-            fetch = FetchType.EAGER
+            fetch = FetchType.LAZY
     )
     @JoinColumn(name = "connected_id")
-    List<InTransactionEntity> inTransactionEntityList;
+    private List<InTransactionEntity> inTransactionEntityList;
 
     @OneToMany(
+            fetch = FetchType.LAZY
+    )
+    @JoinColumn(name = "user_id")
+    private List<OutTransactionEntity> outTransactionEntityList;
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
             fetch = FetchType.EAGER
     )
     @JoinColumn(name = "user_id")
-    List<OutTransactionEntity> outTransactionEntityList;
+    private List<AuthorityEntity> authorityEntityList;
 
 }

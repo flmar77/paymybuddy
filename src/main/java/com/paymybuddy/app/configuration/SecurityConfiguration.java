@@ -27,8 +27,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     // UserDetailsService
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN");
         auth.userDetailsService(userService)
                 .passwordEncoder(passwordEncoder());
     }
@@ -36,11 +34,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http
-                //.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/loginerror").permitAll()
+                .antMatchers("/loginlogout").permitAll()
                 .antMatchers("/visitor/*").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -49,8 +47,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/user/home")
                 .failureUrl("/loginerror")
                 .and()
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login");
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/loginlogout"));
     }
 }

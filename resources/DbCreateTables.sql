@@ -9,8 +9,8 @@ CREATE TABLE "user"
     balance  numeric(22, 2) NOT NULL CHECK ( balance > 0 )
 );
 
-DROP TABLE IF EXISTS authorities CASCADE;
-CREATE TABLE authorities
+DROP TABLE IF EXISTS authority CASCADE;
+CREATE TABLE authority
 (
     id        serial PRIMARY KEY,
     user_id   int  NOT NULL,

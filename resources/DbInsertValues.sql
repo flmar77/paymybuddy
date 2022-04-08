@@ -1,7 +1,7 @@
 INSERT INTO "user" (id, email, password, enabled, balance)
-VALUES (1, 'user1@mail.com', 'user1', true, 500),
-       (2, 'user2@mail.com', 'user2', true, 1000);
-INSERT INTO authorities (id, user_id, authority)
+VALUES (1, 'user1@mail.com', '$2y$10$KqeVD1LGG5PKjzWL8F8zwuYA7adTmgMuyf6fhtxDn8uRG.nH.mOTW', true, 500),
+       (2, 'user2@mail.com', '$2y$10$kKNkGiDL65WXFJ0yxjBiS.wJQR.PbE5MLVzWDpsdfhTaVRSbyEgTm', true, 1000);
+INSERT INTO authority (id, user_id, authority)
 values (1, 1, 'USER'),
        (2, 2, 'USER');
 INSERT INTO "connection" (id, connector_id, connected_id)

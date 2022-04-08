@@ -29,7 +29,10 @@
                 <a class="nav-link link-dark" href="/user/contact">contact</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link link-dark" href="/logout">logoff</a>
+                <a href="javascript: document.logoutForm.submit()" class="nav-link link-dark">Logoff</a>
+                <form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+                    <input hidden type="submit" value="Sign Out"/>
+                </form>
             </li>
         </ul>
     </nav>
