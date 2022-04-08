@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS "user" CASCADE;
--- TODO : "random" sequence
+-- TODO : "random" sequence managed by JPA
 CREATE TABLE "user"
 (
     id       serial PRIMARY KEY,
@@ -12,9 +12,10 @@ CREATE TABLE "user"
 DROP TABLE IF EXISTS authorities CASCADE;
 CREATE TABLE authorities
 (
-    id        int  NOT NULL,
+    id        serial PRIMARY KEY,
+    user_id   int  NOT NULL,
     authority text NOT NULL DEFAULT 'USER',
-    FOREIGN KEY (id) REFERENCES "user" (id)
+    FOREIGN KEY (user_id) REFERENCES "user" (id)
 );
 
 DROP TABLE IF EXISTS connection CASCADE;
@@ -28,30 +29,27 @@ CREATE TABLE connection
     UNIQUE (connector_id, connected_id)
 );
 
-DROP TABLE IF EXISTS transaction CASCADE;
-CREATE TABLE transaction
+DROP TABLE IF EXISTS in_transaction CASCADE;
+CREATE TABLE in_transaction
 (
     id               serial PRIMARY KEY,
     description      text,
-    monetized_amount numeric(22, 2) NOT NULL,
-    user_id          int            NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES "user" (id)
-);
-
-DROP TABLE IF EXISTS in_transaction CASCADE;
--- TODO : connectedId
-CREATE TABLE in_transaction
-(
-    id           int UNIQUE     NOT NULL PRIMARY KEY,
-    given_amount numeric(22, 2) NOT NULL CHECK ( given_amount > 0 ),
-    FOREIGN KEY (id) REFERENCES "transaction" (id)
+    monetized_amount numeric(22, 2) NOT NULL CHECK ( monetized_amount > 0 ),
+    given_amount     numeric(22, 2) NOT NULL CHECK ( given_amount > 0 ),
+    connector_id     int            NOT NULL,
+    connected_id     int            NOT NULL,
+    FOREIGN KEY (connector_id) REFERENCES "user" (id),
+    FOREIGN KEY (connected_id) REFERENCES "user" (id)
 );
 
 DROP TABLE IF EXISTS out_transaction CASCADE;
 CREATE TABLE out_transaction
 (
-    id                 int UNIQUE     NOT NULL PRIMARY KEY,
+    id                 serial PRIMARY KEY,
+    description        text,
+    monetized_amount   numeric(22, 2) NOT NULL CHECK ( monetized_amount > 0 ),
     transferred_amount numeric(22, 2) NOT NULL,
     iban               text,
-    FOREIGN KEY (id) REFERENCES "transaction" (id)
+    user_id            int            NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES "user" (id)
 );

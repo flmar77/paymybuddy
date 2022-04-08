@@ -22,12 +22,30 @@ public class UserEntity {
 
     private String password;
 
-    // TODO : list<connectedId>
-    // ManyToMany + JoinTable
+    private boolean enabled;
+
+    private float balance;
+
+    @ManyToMany(
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL
+    )
+    @JoinTable(name = "connection",
+            joinColumns = @JoinColumn(name = "connector_id"),
+            inverseJoinColumns = @JoinColumn(name = "connected_id")
+    )
+    private List<UserEntity> connectedUsers = new ArrayList<>();
+
     @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER)
-    @JoinColumn(name = "connector_id")
-    private List<ConnectionEntity> connectionsEntity = new ArrayList<>();
+            fetch = FetchType.EAGER
+    )
+    @JoinColumn(name = "connected_id")
+    List<InTransactionEntity> inTransactionEntityList;
+
+    @OneToMany(
+            fetch = FetchType.EAGER
+    )
+    @JoinColumn(name = "user_id")
+    List<OutTransactionEntity> outTransactionEntityList;
+
 }

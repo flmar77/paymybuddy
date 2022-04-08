@@ -12,16 +12,21 @@ import javax.persistence.*;
 public class InTransactionEntity {
 
     @Id
+    @GeneratedValue
     private Integer id;
+
+    private String description;
+
+    @Column(name = "monetized_amount")
+    private float monetizedAmount;
 
     @Column(name = "given_amount")
     private float givenAmount;
 
-    @OneToOne(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER)
-    @JoinColumn(name = "id")
-    private TransactionEntity transactionsEntity;
+    @Column(name = "connector_id")
+    private Integer connectorId;
+
+    @Column(name = "connected_id")
+    private Integer connectedId;
 
 }
