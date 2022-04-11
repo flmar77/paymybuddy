@@ -22,6 +22,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,6 +70,20 @@ public class UserService implements UserDetailsService {
         return mapUserEntityToUserModel(userEntitySaved);
     }
 
+    public UserModel getUserByEmail(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email)
+                .orElseThrow(NoSuchElementException::new);
+
+        return mapUserEntityToUserModel(userEntity);
+    }
+
+    private String getUserEmailById(Integer userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(NoSuchElementException::new);
+
+        return userEntity.getEmail();
+    }
+
     private UserModel mapUserEntityToUserModel(UserEntity userEntity) {
         UserModel userModel = new UserModel();
         userModel.setId(userEntity.getId());
@@ -96,7 +111,7 @@ public class UserService implements UserDetailsService {
                     inTransactionModel.setDescription(inTransactionEntity.getDescription());
                     inTransactionModel.setMonetizedAmount(inTransactionEntity.getMonetizedAmount());
                     inTransactionModel.setGivenAmount(inTransactionEntity.getGivenAmount());
-                    inTransactionModel.setConnectedId(inTransactionEntity.getConnectedId());
+                    inTransactionModel.setConnectedEmail(getUserEmailById(inTransactionEntity.getConnectedId()));
                     return inTransactionModel;
                 })
                 .collect(Collectors.toList());
@@ -118,6 +133,8 @@ public class UserService implements UserDetailsService {
                 })
                 .collect(Collectors.toList());
     }
+
+
 
     /*
     @Transactional

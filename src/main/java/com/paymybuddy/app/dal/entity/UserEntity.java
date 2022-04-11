@@ -39,7 +39,7 @@ public class UserEntity {
     @OneToMany(
             fetch = FetchType.LAZY
     )
-    @JoinColumn(name = "connected_id")
+    @JoinColumn(name = "connector_id")
     private List<InTransactionEntity> inTransactionEntityList;
 
     @OneToMany(

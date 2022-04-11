@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org"
+      lang="en-us">
 <head>
     <meta charset="UTF-8"/>
     <title>Pay My Buddy - Transfer In</title>
@@ -62,15 +64,10 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td>user to add</td>
-                <td>desc to add</td>
-                <td>amount to add</td>
-            </tr>
-            <tr>
-                <td>user to add</td>
-                <td>desc to add</td>
-                <td>amount to add</td>
+            <tr th:each="inTransactionModel: ${inTransactionModelList}">
+                <td th:text="${inTransactionModel.connectedEmail}"></td>
+                <td th:text="${inTransactionModel.description}"></td>
+                <td th:text="${inTransactionModel.givenAmount}"></td>
             </tr>
             </tbody>
         </table>
