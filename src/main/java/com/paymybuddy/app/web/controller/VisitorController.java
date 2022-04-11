@@ -11,15 +11,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.persistence.EntityExistsException;
+
 // TODO : binding result pour vérifier les formulaires
 @Slf4j
 @Controller
-public class pmbController {
+public class VisitorController {
 
     @Autowired
     private UserService userService;
 
-    // visitor
     @GetMapping("/")
     public String visitorHome() {
         return "/visitor/home";
@@ -50,48 +51,27 @@ public class pmbController {
 
     @PostMapping("/visitor/createaccount")
     public ModelAndView visitorPostCreateAccount(@ModelAttribute UserModel userModel) {
-        log.debug(userModel.getEmail() + " " + userModel.getPassword());
-        UserModel userModel1 = userService.createUser(userModel);
-        log.debug(userModel1.getEmail());
-        return new ModelAndView("redirect:/visitor/createdaccount");
+        try {
+            UserModel userModelCreated = userService.createUser(userModel);
+            log.debug("account/[role] created : " + userModelCreated.getEmail() + '/' + userModelCreated.getRoles());
+            return new ModelAndView("redirect:/visitor/createdaccount");
+        } catch (EntityExistsException e) {
+            log.debug("account not created because already exists : " + userModel.getEmail());
+            return new ModelAndView("redirect:/visitor/notcreatedaccount");
+        }
     }
 
-
     @GetMapping("/visitor/createdaccount")
-    public String visitorPostCreateAccount(Model model) {
+    public String visitorCreatedAccount(Model model) {
         model.addAttribute("createdaccount", true);
         return "/visitor/login";
     }
 
-    // user
-    @GetMapping("/user/home")
-    public String userHome() {
-        return "/user/home";
-    }
-
-    @GetMapping("/user/transferin")
-    public String userTransferIn() {
-        return "/user/transferin";
-    }
-
-    @GetMapping("/user/connection")
-    public String userConnection() {
-        return "/user/connection";
-    }
-
-    @GetMapping("/user/transferout")
-    public String userTransferOut() {
-        return "/user/transferout";
-    }
-
-    @GetMapping("/user/profile")
-    public String userProfile() {
-        return "/user/profile";
-    }
-
-    @GetMapping("/user/contact")
-    public String userContact() {
-        return "user/contact";
+    @GetMapping("/visitor/notcreatedaccount")
+    public String visitorNotCreatedAccount(Model model) {
+        model.addAttribute("notcreatedaccount", true);
+        model.addAttribute("userModel", new UserModel());
+        return "/visitor/createaccount";
     }
 
 }

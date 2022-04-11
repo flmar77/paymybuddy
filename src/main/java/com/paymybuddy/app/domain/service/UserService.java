@@ -4,27 +4,26 @@ import com.paymybuddy.app.dal.entity.AuthorityEntity;
 import com.paymybuddy.app.dal.entity.InTransactionEntity;
 import com.paymybuddy.app.dal.entity.OutTransactionEntity;
 import com.paymybuddy.app.dal.entity.UserEntity;
-import com.paymybuddy.app.dal.repository.AuthorityRepository;
 import com.paymybuddy.app.dal.repository.UserRepository;
 import com.paymybuddy.app.domain.model.InTransactionModel;
 import com.paymybuddy.app.domain.model.OutTransactionModel;
 import com.paymybuddy.app.domain.model.UserModel;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class UserService implements UserDetailsService {
 
@@ -32,7 +31,10 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
-    private AuthorityRepository authorityRepository;
+    private AuthorityService authorityService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -51,46 +53,20 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public List<UserEntity> getAllUsers() {
-        List<UserEntity> userEntityList = (List<UserEntity>) userRepository.findAll();
-        for (UserEntity userEntity : userEntityList) {
-            String message = userEntity.getId() + " "
-                    + userEntity.getEmail() + " "
-                    + userEntity.getBalance();
-            for (UserEntity connectedUser : userEntity.getConnectedUsers()) {
-                message = message + "/" + connectedUser.getEmail();
-            }
-            for (InTransactionEntity inTransactionEntity : userEntity.getInTransactionEntityList()) {
-                message = message + "-" + inTransactionEntity.getDescription();
-            }
-            for (OutTransactionEntity outTransactionEntity : userEntity.getOutTransactionEntityList()) {
-                message = message + "_" + outTransactionEntity.getDescription();
-            }
-            for (AuthorityEntity authorityEntity : userEntity.getAuthorityEntityList()) {
-                message = message + "|" + authorityEntity.getAuthority();
-            }
-            log.debug(message);
-        }
-        return userEntityList;
-    }
-
-    @Transactional
     public UserModel createUser(UserModel userModel) throws EntityExistsException {
         if (userRepository.findByEmail(userModel.getEmail()).isPresent()) {
             throw new EntityExistsException();
         }
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail(userModel.getEmail());
-        userEntity.setPassword(userModel.getPassword());
-        userEntity.setEnabled(true);
-        UserEntity userEntity1 = userRepository.save(userEntity);
+        UserEntity userEntityToSave = new UserEntity();
+        userEntityToSave.setEmail(userModel.getEmail());
+        userEntityToSave.setPassword(passwordEncoder.encode(userModel.getPassword()));
+        userEntityToSave.setEnabled(true);
+        UserEntity userEntitySaved = userRepository.save(userEntityToSave);
 
-        AuthorityEntity authorityEntity = new AuthorityEntity();
-        authorityEntity.setUserId(userEntity1.getId());
-        authorityEntity.setAuthority("USER");
-        authorityRepository.save(authorityEntity);
+        AuthorityEntity authorityEntitySaved = authorityService.createAuthority(userEntitySaved.getId());
+        userEntitySaved.setAuthorityEntityList(Collections.singletonList(authorityEntitySaved));
 
-        return mapUserEntityToUserModel(userEntity1);
+        return mapUserEntityToUserModel(userEntitySaved);
     }
 
     private UserModel mapUserEntityToUserModel(UserEntity userEntity) {
@@ -103,6 +79,9 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toList()));
         userModel.setInTransactionModelList(mapInTransactionEntityToInTransactionModel(userEntity.getInTransactionEntityList()));
         userModel.setOutTransactionModelList(mapOutTransactionEntityToOuTransactionModel(userEntity.getOutTransactionEntityList()));
+        userModel.setRoles(userEntity.getAuthorityEntityList().stream()
+                .map(AuthorityEntity::getAuthority)
+                .collect(Collectors.toList()));
         return userModel;
     }
 
@@ -139,5 +118,32 @@ public class UserService implements UserDetailsService {
                 })
                 .collect(Collectors.toList());
     }
+
+    /*
+    @Transactional
+    public List<UserEntity> getAllUsers() {
+        List<UserEntity> userEntityList = (List<UserEntity>) userRepository.findAll();
+        for (UserEntity userEntity : userEntityList) {
+            String message = userEntity.getId() + " "
+                    + userEntity.getEmail() + " "
+                    + userEntity.getBalance();
+            for (UserEntity connectedUser : userEntity.getConnectedUsers()) {
+                message = message + "/" + connectedUser.getEmail();
+            }
+            for (InTransactionEntity inTransactionEntity : userEntity.getInTransactionEntityList()) {
+                message = message + "-" + inTransactionEntity.getDescription();
+            }
+            for (OutTransactionEntity outTransactionEntity : userEntity.getOutTransactionEntityList()) {
+                message = message + "_" + outTransactionEntity.getDescription();
+            }
+            for (AuthorityEntity authorityEntity : userEntity.getAuthorityEntityList()) {
+                message = message + "|" + authorityEntity.getAuthority();
+            }
+            log.debug(message);
+        }
+        return userEntityList;
+    }
+
+ */
 
 }

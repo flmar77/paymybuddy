@@ -23,4 +23,6 @@ public class UserModel {
 
     private List<OutTransactionModel> outTransactionModelList;
 
+    private List<String> roles;
+
 }
