@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityExistsException;
 
@@ -32,15 +32,15 @@ public class VisitorController {
     }
 
     @GetMapping("/loginerror")
-    public String visitorLoginError(Model model) {
-        model.addAttribute("loginError", true);
-        return "/visitor/login";
+    public String visitorLoginError(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("loginError", true);
+        return "redirect:/login";
     }
 
     @GetMapping("/loginlogout")
-    public String visitorLoginLogout(Model model) {
-        model.addAttribute("loginLogout", true);
-        return "/visitor/login";
+    public String visitorLoginLogout(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("loginLogout", true);
+        return "redirect:/login";
     }
 
     @GetMapping("/visitor/createaccount")
@@ -49,31 +49,19 @@ public class VisitorController {
         return "/visitor/createaccount";
     }
 
-    // TODO : ModelAndView ?
     @PostMapping("/visitor/createaccount")
-    public ModelAndView visitorPostCreateAccount(@ModelAttribute UserModel userModel) {
+    public String visitorPostCreateAccount(@ModelAttribute UserModel userModel,
+                                           RedirectAttributes redirectAttributes) {
         try {
             UserModel userModelCreated = userService.createUser(userModel);
             log.debug("account/[role] created : " + userModelCreated.getEmail() + '/' + userModelCreated.getRoles());
-            return new ModelAndView("redirect:/visitor/createdaccount");
+            redirectAttributes.addFlashAttribute("createdaccount", true);
+            return "redirect:/login";
         } catch (EntityExistsException e) {
             log.debug("account not created because already exists : " + userModel.getEmail());
-            return new ModelAndView("redirect:/visitor/notcreatedaccount");
+            redirectAttributes.addFlashAttribute("notcreatedaccount", true);
+            return "redirect:/visitor/createaccount";
         }
-    }
-
-    @GetMapping("/visitor/createdaccount")
-    public String visitorCreatedAccount(Model model) {
-        model.addAttribute("createdaccount", true);
-        return "/visitor/login";
-    }
-
-    //TODO : use redirect
-    @GetMapping("/visitor/notcreatedaccount")
-    public String visitorNotCreatedAccount(Model model) {
-        model.addAttribute("notcreatedaccount", true);
-        model.addAttribute("userModel", new UserModel());
-        return "/visitor/createaccount";
     }
 
 }
