@@ -2,9 +2,11 @@ package com.paymybuddy.app.web.controller;
 
 import com.paymybuddy.app.dal.entity.ConnectionEntity;
 import com.paymybuddy.app.domain.model.InTransactionModel;
+import com.paymybuddy.app.domain.model.OutTransactionModel;
 import com.paymybuddy.app.domain.model.UserModel;
 import com.paymybuddy.app.domain.service.ConnectionService;
 import com.paymybuddy.app.domain.service.InTransactionService;
+import com.paymybuddy.app.domain.service.OutTransactionService;
 import com.paymybuddy.app.domain.service.UserService;
 import com.paymybuddy.app.web.dto.StringFormDto;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +21,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
-// TODO : binding result pour vérifier les formulaires
 @Slf4j
 @Controller
 public class UserController {
@@ -29,6 +30,9 @@ public class UserController {
 
     @Autowired
     private InTransactionService inTransactionService;
+
+    @Autowired
+    private OutTransactionService outTransactionService;
 
     @Autowired
     private ConnectionService connectionService;
@@ -92,8 +96,31 @@ public class UserController {
     }
 
     @GetMapping("/user/transferout")
-    public String userTransferOut() {
+    public String userGetTransferOut(Authentication authentication,
+                                     Model model) {
+        UserModel userModel = userService.getUserByEmail(authentication.getName());
+        model.addAttribute("outTransactionModel", new OutTransactionModel());
+        model.addAttribute("outTransactionModelList", userModel.getOutTransactionModelList());
+
         return "/user/transferout";
+    }
+
+    @PostMapping("/user/transferout")
+    public String userPostTransferOut(Authentication authentication,
+                                      @ModelAttribute OutTransactionModel outTransactionModelToSave,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            outTransactionModelToSave.setUserEmail(authentication.getName());
+            OutTransactionModel outTransactionModelSaved = outTransactionService.createOutTransaction(outTransactionModelToSave);
+            log.debug("outTransaction created with id : " + outTransactionModelSaved.getId());
+            redirectAttributes.addFlashAttribute("outTransactionDone", true);
+            return "redirect:/user/transferout";
+        } catch (UnsupportedOperationException e) {
+            log.debug("outTransaction not done because of insufficient balance");
+            redirectAttributes.addFlashAttribute("outTransactionNotDone", true);
+            return "redirect:/user/transferout";
+        }
+
     }
 
     @GetMapping("/user/profile")

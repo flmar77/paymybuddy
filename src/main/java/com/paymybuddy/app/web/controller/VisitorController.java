@@ -13,7 +13,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityExistsException;
 
-// TODO : binding result pour vérifier les formulaires
 @Slf4j
 @Controller
 public class VisitorController {

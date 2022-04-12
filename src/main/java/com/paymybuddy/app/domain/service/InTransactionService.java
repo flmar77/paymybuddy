@@ -54,7 +54,7 @@ public class InTransactionService {
                 .collect(Collectors.toList());
     }
 
-    public InTransactionModel mapInTransactionEntityToInTransactionModel(InTransactionEntity inTransactionEntity) {
+    private InTransactionModel mapInTransactionEntityToInTransactionModel(InTransactionEntity inTransactionEntity) {
         InTransactionModel inTransactionModel = new InTransactionModel();
         inTransactionModel.setId(inTransactionEntity.getId());
         inTransactionModel.setDescription(inTransactionEntity.getDescription());

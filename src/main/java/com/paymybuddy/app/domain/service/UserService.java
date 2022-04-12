@@ -1,10 +1,8 @@
 package com.paymybuddy.app.domain.service;
 
 import com.paymybuddy.app.dal.entity.AuthorityEntity;
-import com.paymybuddy.app.dal.entity.OutTransactionEntity;
 import com.paymybuddy.app.dal.entity.UserEntity;
 import com.paymybuddy.app.dal.repository.UserRepository;
-import com.paymybuddy.app.domain.model.OutTransactionModel;
 import com.paymybuddy.app.domain.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,6 +35,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private InTransactionService inTransactionService;
+
+    @Autowired
+    private OutTransactionService outTransactionService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -118,7 +119,7 @@ public class UserService implements UserDetailsService {
                         .noneMatch(allEmail -> allEmail.equals(notAvailableEmail)))
                 .collect(Collectors.toList());
         System.out.println(availableEmails);
-        
+
         return availableEmails;
     }
 
@@ -131,29 +132,11 @@ public class UserService implements UserDetailsService {
                 .map(UserEntity::getEmail)
                 .collect(Collectors.toList()));
         userModel.setInTransactionModelList(inTransactionService.mapInTransactionEntityListToInTransactionModelList(userEntity.getInTransactionEntityList()));
-        userModel.setOutTransactionModelList(mapOutTransactionEntityToOuTransactionModel(userEntity.getOutTransactionEntityList()));
+        userModel.setOutTransactionModelList(outTransactionService.mapOutTransactionEntityListToOuTransactionModelList(userEntity.getOutTransactionEntityList()));
         userModel.setRoles(userEntity.getAuthorityEntityList().stream()
                 .map(AuthorityEntity::getAuthority)
                 .collect(Collectors.toList()));
         return userModel;
-    }
-
-    // TODO : move to outTrans service
-    private List<OutTransactionModel> mapOutTransactionEntityToOuTransactionModel(List<OutTransactionEntity> outTransactionEntityList) {
-        if (outTransactionEntityList == null) {
-            return null;
-        }
-        return outTransactionEntityList.stream()
-                .map(outTransactionEntity -> {
-                    OutTransactionModel outTransactionModel = new OutTransactionModel();
-                    outTransactionModel.setId(outTransactionEntity.getId());
-                    outTransactionModel.setDescription(outTransactionEntity.getDescription());
-                    outTransactionModel.setMonetizedAmount(outTransactionEntity.getMonetizedAmount());
-                    outTransactionModel.setTransferredAmount(outTransactionEntity.getTransferredAmount());
-                    outTransactionModel.setIban(outTransactionEntity.getIban());
-                    return outTransactionModel;
-                })
-                .collect(Collectors.toList());
     }
 
 }

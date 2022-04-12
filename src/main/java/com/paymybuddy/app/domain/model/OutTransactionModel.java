@@ -17,4 +17,6 @@ public class OutTransactionModel {
 
     private String iban;
 
+    private String userEmail;
+
 }

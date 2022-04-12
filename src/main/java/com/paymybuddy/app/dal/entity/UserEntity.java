@@ -47,6 +47,7 @@ public class UserEntity {
             fetch = FetchType.LAZY
     )
     @JoinColumn(name = "user_id")
+    @OrderBy("id DESC")
     private List<OutTransactionEntity> outTransactionEntityList;
 
     @OneToMany(
