@@ -107,6 +107,21 @@ public class UserService implements UserDetailsService {
         userRepository.save(userEntity);
     }
 
+    public List<String> getUserAvailableEmailsByEmail(String userEmail) {
+        List<String> allEmails = userRepository.findAllEmails();
+
+        List<String> notAvailableEmails = getUserByEmail(userEmail).getConnectedEmails();
+        notAvailableEmails.add(userEmail);
+
+        List<String> availableEmails = allEmails.stream()
+                .filter(notAvailableEmail -> notAvailableEmails.stream()
+                        .noneMatch(allEmail -> allEmail.equals(notAvailableEmail)))
+                .collect(Collectors.toList());
+        System.out.println(availableEmails);
+        
+        return availableEmails;
+    }
+
     private UserModel mapUserEntityToUserModel(UserEntity userEntity) {
         UserModel userModel = new UserModel();
         userModel.setId(userEntity.getId());
@@ -140,6 +155,5 @@ public class UserService implements UserDetailsService {
                 })
                 .collect(Collectors.toList());
     }
-
 
 }
