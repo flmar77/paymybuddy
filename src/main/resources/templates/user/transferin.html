@@ -26,24 +26,50 @@
         </a>
     </div>
 
-    <div class="d-flex justify-content-around bg-light p-5">
+    <form method="post" th:action="@{/user/transferin}" th:object="${inTransactionModel}">
 
-        <div class="dropdown w-25">
-            <button class="btn btn-outline-secondary dropdown-toggle w-100">Select a connection</button>
-        </div>
+        <div class="bg-light p-3">
 
-        <div class="input-group w-25">
-            <input type="text" class="form-control">
-            <div class="input-group-append">
-                <span class="input-group-text">€</span>
+            <div class="d-flex justify-content-around p-3">
+
+                <div class="w-25">
+                    <select class="form-select" th:field="*{connectedEmail}">
+                        <option value="" selected>Select a connection</option>
+                        <option th:each="connectedEmail : ${connectedEmails}"
+                                th:value="${connectedEmail}"
+                                th:text="${connectedEmail}">
+                        </option>
+                    </select>
+                </div>
+
+                <div class="input-group w-25">
+                    <input type="number" th:field="*{givenAmount}" class="form-control" placeholder="0">
+                    <div class="input-group-append">
+                        <span class="input-group-text">€</span>
+                    </div>
+                </div>
+
+                <div class="w-25">
+                    <input type="text" th:field="*{description}" class="form-control" placeholder="Description">
+                </div>
+
             </div>
+
+            <div class="m-auto w-50 p-3">
+                <input type="submit" value="Pay" class="btn btn-primary w-100"/>
+            </div>
+
+            <h3 th:if="${inTransactionDone}" class="text-success text-center p-1">
+                Congratulations ! Your transaction has been registered
+            </h3>
+            <h3 th:if="${inTransactionNotDone}" class="text-danger text-center p-1">
+                Your transaction can't be registered because of insufficient balance
+            </h3>
+
         </div>
 
-        <div class="w-25">
-            <button class="btn btn-success w-100">Pay</button>
-        </div>
 
-    </div>
+    </form>
 
 </div>
 
@@ -54,11 +80,11 @@
         <h2>My Transactions</h2>
     </div>
 
-    <div class="border border-dark">
-        <table class="table table-striped text-center m-0">
+    <div class="pb-5">
+        <table class="table table-striped text-center m-0 border border-dark">
             <thead class="bg-success text-white">
             <tr>
-                <th scope="col">Connections</th>
+                <th scope="col">Connection</th>
                 <th scope="col">Description</th>
                 <th scope="col">Amount</th>
             </tr>

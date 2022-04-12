@@ -34,8 +34,8 @@ CREATE TABLE in_transaction
 (
     id               serial PRIMARY KEY,
     description      text,
-    monetized_amount numeric(22, 2) NOT NULL CHECK ( monetized_amount > 0 ),
-    given_amount     numeric(22, 2) NOT NULL CHECK ( given_amount > 0 ),
+    monetized_amount numeric(22, 2) NOT NULL CHECK ( monetized_amount >= 0 ),
+    given_amount     numeric(22, 2) NOT NULL CHECK ( given_amount >= 0 ),
     connector_id     int            NOT NULL,
     connected_id     int            NOT NULL,
     FOREIGN KEY (connector_id) REFERENCES "user" (id),
@@ -47,7 +47,7 @@ CREATE TABLE out_transaction
 (
     id                 serial PRIMARY KEY,
     description        text,
-    monetized_amount   numeric(22, 2) NOT NULL CHECK ( monetized_amount > 0 ),
+    monetized_amount   numeric(22, 2) NOT NULL CHECK ( monetized_amount >= 0 ),
     transferred_amount numeric(22, 2) NOT NULL,
     iban               text,
     user_id            int            NOT NULL,

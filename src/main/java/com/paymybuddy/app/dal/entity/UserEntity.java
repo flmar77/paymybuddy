@@ -40,6 +40,7 @@ public class UserEntity {
             fetch = FetchType.LAZY
     )
     @JoinColumn(name = "connector_id")
+    @OrderBy("id DESC")
     private List<InTransactionEntity> inTransactionEntityList;
 
     @OneToMany(

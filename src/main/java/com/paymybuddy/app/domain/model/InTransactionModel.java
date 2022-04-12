@@ -15,6 +15,8 @@ public class InTransactionModel {
 
     private float givenAmount;
 
+    private String connectorEmail;
+
     private String connectedEmail;
 
 }

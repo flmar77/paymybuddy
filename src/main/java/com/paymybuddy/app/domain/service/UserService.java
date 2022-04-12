@@ -1,11 +1,9 @@
 package com.paymybuddy.app.domain.service;
 
 import com.paymybuddy.app.dal.entity.AuthorityEntity;
-import com.paymybuddy.app.dal.entity.InTransactionEntity;
 import com.paymybuddy.app.dal.entity.OutTransactionEntity;
 import com.paymybuddy.app.dal.entity.UserEntity;
 import com.paymybuddy.app.dal.repository.UserRepository;
-import com.paymybuddy.app.domain.model.InTransactionModel;
 import com.paymybuddy.app.domain.model.OutTransactionModel;
 import com.paymybuddy.app.domain.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +34,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private InTransactionService inTransactionService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -77,11 +78,33 @@ public class UserService implements UserDetailsService {
         return mapUserEntityToUserModel(userEntity);
     }
 
-    private String getUserEmailById(Integer userId) {
+    public String getUserEmailById(Integer userId) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(NoSuchElementException::new);
 
         return userEntity.getEmail();
+    }
+
+    public Integer getUserIdByEmail(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email)
+                .orElseThrow(NoSuchElementException::new);
+
+        return userEntity.getId();
+    }
+
+    public float getUserBalanceByEmail(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email)
+                .orElseThrow(NoSuchElementException::new);
+
+        return userEntity.getBalance();
+    }
+
+    public void updateUserBalanceByEmail(String email, float amount) {
+        UserEntity userEntity = userRepository.findByEmail(email)
+                .orElseThrow(NoSuchElementException::new);
+
+        userEntity.setBalance(userEntity.getBalance() + amount);
+        userRepository.save(userEntity);
     }
 
     private UserModel mapUserEntityToUserModel(UserEntity userEntity) {
@@ -92,7 +115,7 @@ public class UserService implements UserDetailsService {
         userModel.setConnectedEmails(userEntity.getConnectedUsers().stream()
                 .map(UserEntity::getEmail)
                 .collect(Collectors.toList()));
-        userModel.setInTransactionModelList(mapInTransactionEntityToInTransactionModel(userEntity.getInTransactionEntityList()));
+        userModel.setInTransactionModelList(inTransactionService.mapInTransactionEntityListToInTransactionModelList(userEntity.getInTransactionEntityList()));
         userModel.setOutTransactionModelList(mapOutTransactionEntityToOuTransactionModel(userEntity.getOutTransactionEntityList()));
         userModel.setRoles(userEntity.getAuthorityEntityList().stream()
                 .map(AuthorityEntity::getAuthority)
@@ -100,23 +123,7 @@ public class UserService implements UserDetailsService {
         return userModel;
     }
 
-    private List<InTransactionModel> mapInTransactionEntityToInTransactionModel(List<InTransactionEntity> inTransactionEntityList) {
-        if (inTransactionEntityList == null) {
-            return null;
-        }
-        return inTransactionEntityList.stream()
-                .map(inTransactionEntity -> {
-                    InTransactionModel inTransactionModel = new InTransactionModel();
-                    inTransactionModel.setId(inTransactionEntity.getId());
-                    inTransactionModel.setDescription(inTransactionEntity.getDescription());
-                    inTransactionModel.setMonetizedAmount(inTransactionEntity.getMonetizedAmount());
-                    inTransactionModel.setGivenAmount(inTransactionEntity.getGivenAmount());
-                    inTransactionModel.setConnectedEmail(getUserEmailById(inTransactionEntity.getConnectedId()));
-                    return inTransactionModel;
-                })
-                .collect(Collectors.toList());
-    }
-
+    // TODO : move to outTrans service
     private List<OutTransactionModel> mapOutTransactionEntityToOuTransactionModel(List<OutTransactionEntity> outTransactionEntityList) {
         if (outTransactionEntityList == null) {
             return null;
@@ -134,33 +141,5 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toList());
     }
 
-
-
-    /*
-    @Transactional
-    public List<UserEntity> getAllUsers() {
-        List<UserEntity> userEntityList = (List<UserEntity>) userRepository.findAll();
-        for (UserEntity userEntity : userEntityList) {
-            String message = userEntity.getId() + " "
-                    + userEntity.getEmail() + " "
-                    + userEntity.getBalance();
-            for (UserEntity connectedUser : userEntity.getConnectedUsers()) {
-                message = message + "/" + connectedUser.getEmail();
-            }
-            for (InTransactionEntity inTransactionEntity : userEntity.getInTransactionEntityList()) {
-                message = message + "-" + inTransactionEntity.getDescription();
-            }
-            for (OutTransactionEntity outTransactionEntity : userEntity.getOutTransactionEntityList()) {
-                message = message + "_" + outTransactionEntity.getDescription();
-            }
-            for (AuthorityEntity authorityEntity : userEntity.getAuthorityEntityList()) {
-                message = message + "|" + authorityEntity.getAuthority();
-            }
-            log.debug(message);
-        }
-        return userEntityList;
-    }
-
- */
 
 }

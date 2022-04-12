@@ -1,12 +1,16 @@
 INSERT INTO "user" (email, password, enabled, balance)
 VALUES ('user1@mail.com', '$2y$10$KqeVD1LGG5PKjzWL8F8zwuYA7adTmgMuyf6fhtxDn8uRG.nH.mOTW', true, 500),
-       ('user2@mail.com', '$2y$10$kKNkGiDL65WXFJ0yxjBiS.wJQR.PbE5MLVzWDpsdfhTaVRSbyEgTm', true, 1000);
+       ('user2@mail.com', '$2y$10$kKNkGiDL65WXFJ0yxjBiS.wJQR.PbE5MLVzWDpsdfhTaVRSbyEgTm', true, 1000),
+       ('user3@mail.com', '$2y$10$ruItfZjGLKHdCeNAOIFo8e5WXEAyNIzdGcdyEnBPfcSkjfH6Y4GfG', true, 2000);
 INSERT INTO authority (user_id, authority)
 values (1, 'USER'),
-       (2, 'USER');
+       (2, 'USER'),
+       (3, 'USER');
 INSERT INTO "connection" (connector_id, connected_id)
 VALUES (1, 2),
-       (2, 1);
+       (1, 3),
+       (2, 1),
+       (3, 2);
 INSERT INTO "in_transaction" (description, monetized_amount, given_amount, connector_id, connected_id)
 VALUES ('intrans1', 1.5, 50, 1, 2),
        ('intrans2', 2.5, 51, 1, 2),

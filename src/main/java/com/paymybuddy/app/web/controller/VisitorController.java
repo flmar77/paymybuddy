@@ -49,6 +49,7 @@ public class VisitorController {
         return "/visitor/createaccount";
     }
 
+    // TODO : ModelAndView ?
     @PostMapping("/visitor/createaccount")
     public ModelAndView visitorPostCreateAccount(@ModelAttribute UserModel userModel) {
         try {
@@ -67,6 +68,7 @@ public class VisitorController {
         return "/visitor/login";
     }
 
+    //TODO : use redirect
     @GetMapping("/visitor/notcreatedaccount")
     public String visitorNotCreatedAccount(Model model) {
         model.addAttribute("notcreatedaccount", true);
