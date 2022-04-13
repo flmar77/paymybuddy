@@ -12,10 +12,9 @@ import java.util.List;
 @Entity
 @Table(name = "user", schema = "public")
 public class UserEntity {
-
-    // TODO : generatedValue strat sequence
+    
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String email;

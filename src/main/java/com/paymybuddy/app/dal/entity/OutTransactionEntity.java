@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class OutTransactionEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String description;

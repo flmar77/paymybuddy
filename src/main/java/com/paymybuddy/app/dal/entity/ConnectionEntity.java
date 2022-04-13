@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class ConnectionEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "connector_id")

@@ -1,13 +1,15 @@
 DROP TABLE IF EXISTS "user" CASCADE;
--- TODO : "random" sequence managed by JPA
+CREATE SEQUENCE user_id_seq START 1 INCREMENT 5;
 CREATE TABLE "user"
 (
-    id       serial PRIMARY KEY,
+    id       integer        NOT NULL DEFAULT nextval('user_id_seq') PRIMARY KEY,
     email    text UNIQUE    NOT NULL,
     password text           NOT NULL,
     enabled  bool           NOT NULL DEFAULT true,
     balance  numeric(22, 2) NOT NULL CHECK ( balance >= 0 )
 );
+ALTER SEQUENCE user_id_seq
+    OWNED BY "user".id;
 
 DROP TABLE IF EXISTS authority CASCADE;
 CREATE TABLE authority

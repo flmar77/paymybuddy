@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class InTransactionEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String description;
