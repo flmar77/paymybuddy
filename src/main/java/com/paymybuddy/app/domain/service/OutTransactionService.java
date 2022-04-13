@@ -2,6 +2,7 @@ package com.paymybuddy.app.domain.service;
 
 import com.paymybuddy.app.dal.entity.OutTransactionEntity;
 import com.paymybuddy.app.dal.repository.OutTransactionRepository;
+import com.paymybuddy.app.domain.helper.Monetize;
 import com.paymybuddy.app.domain.model.OutTransactionModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class OutTransactionService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private Monetize monetize;
+
     @Transactional
     public OutTransactionModel createOutTransaction(OutTransactionModel outTransactionModelToSave) {
 
@@ -31,8 +35,8 @@ public class OutTransactionService {
         OutTransactionEntity outTransactionEntityToSave = new OutTransactionEntity();
         outTransactionEntityToSave.setDescription(outTransactionModelToSave.getDescription());
         outTransactionEntityToSave.setIban(outTransactionModelToSave.getIban());
-        outTransactionEntityToSave.setTransferredAmount(outTransactionModelToSave.getTransferredAmount());
-        outTransactionEntityToSave.setMonetizedAmount(0);
+        outTransactionEntityToSave.setMonetizedAmount(monetize.getMonetizedAmount(outTransactionModelToSave.getTransferredAmount()));
+        outTransactionEntityToSave.setTransferredAmount(outTransactionModelToSave.getTransferredAmount() - outTransactionEntityToSave.getMonetizedAmount());
         outTransactionEntityToSave.setUserId(userService.getUserIdByEmail(outTransactionModelToSave.getUserEmail()));
 
         OutTransactionEntity outTransactionEntitySaved = outTransactionRepository.save(outTransactionEntityToSave);

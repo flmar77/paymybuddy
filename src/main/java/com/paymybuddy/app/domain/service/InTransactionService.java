@@ -2,6 +2,7 @@ package com.paymybuddy.app.domain.service;
 
 import com.paymybuddy.app.dal.entity.InTransactionEntity;
 import com.paymybuddy.app.dal.repository.InTransactionRepository;
+import com.paymybuddy.app.domain.helper.Monetize;
 import com.paymybuddy.app.domain.model.InTransactionModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class InTransactionService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private Monetize monetize;
+
     @Transactional
     public InTransactionModel createInTransaction(InTransactionModel inTransactionModelToSave) throws UnsupportedOperationException {
 
@@ -30,8 +34,8 @@ public class InTransactionService {
         // add InTransaction
         InTransactionEntity inTransactionEntityToSave = new InTransactionEntity();
         inTransactionEntityToSave.setDescription(inTransactionModelToSave.getDescription());
-        inTransactionEntityToSave.setGivenAmount(inTransactionModelToSave.getGivenAmount());
-        inTransactionEntityToSave.setMonetizedAmount(0);
+        inTransactionEntityToSave.setMonetizedAmount(monetize.getMonetizedAmount(inTransactionModelToSave.getGivenAmount()));
+        inTransactionEntityToSave.setGivenAmount(inTransactionModelToSave.getGivenAmount() - inTransactionEntityToSave.getMonetizedAmount());
         inTransactionEntityToSave.setConnectorId(userService.getUserIdByEmail(inTransactionModelToSave.getConnectorEmail()));
         inTransactionEntityToSave.setConnectedId(userService.getUserIdByEmail(inTransactionModelToSave.getConnectedEmail()));
 
