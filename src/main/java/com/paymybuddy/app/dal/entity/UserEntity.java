@@ -12,20 +12,48 @@ import java.util.List;
 @Entity
 @Table(name = "user", schema = "public")
 public class UserEntity {
-
+    
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String email;
 
     private String password;
 
-    // TODO : list<connectedId>
+    private boolean enabled;
+
+    private float balance;
+
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    @JoinTable(name = "connection",
+            joinColumns = @JoinColumn(name = "connector_id"),
+            inverseJoinColumns = @JoinColumn(name = "connected_id")
+    )
+    private List<UserEntity> connectedUsers = new ArrayList<>();
+
+    @OneToMany(
+            fetch = FetchType.LAZY
+    )
+    @JoinColumn(name = "connector_id")
+    @OrderBy("id DESC")
+    private List<InTransactionEntity> inTransactionEntityList;
+
+    @OneToMany(
+            fetch = FetchType.LAZY
+    )
+    @JoinColumn(name = "user_id")
+    @OrderBy("id DESC")
+    private List<OutTransactionEntity> outTransactionEntityList;
+
     @OneToMany(
             cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER)
-    @JoinColumn(name = "connector_id")
-    private List<ConnectionEntity> connectionsEntity = new ArrayList<>();
+            fetch = FetchType.EAGER
+    )
+    @JoinColumn(name = "user_id")
+    private List<AuthorityEntity> authorityEntityList;
+
 }

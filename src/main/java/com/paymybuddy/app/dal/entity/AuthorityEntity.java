@@ -8,16 +8,16 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "connection", schema = "public")
-public class ConnectionEntity {
+@Table(name = "authority", schema = "public")
+public class AuthorityEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "connector_id")
-    private Integer connectorId;
+    @Column(name = "user_id")
+    private Integer userId;
 
-    @Column(name = "connected_id")
-    private Integer connectedId;
+    private String authority;
+
 }

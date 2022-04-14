@@ -12,18 +12,19 @@ import javax.persistence.*;
 public class OutTransactionEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    private String description;
+
+    @Column(name = "monetized_amount")
+    private float monetizedAmount;
 
     @Column(name = "transferred_amount")
     private float transferredAmount;
 
     private String iban;
 
-    @OneToOne(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER)
-    @JoinColumn(name = "id")
-    private TransactionEntity transactionsEntity;
-
+    @Column(name = "user_id")
+    private Integer userId;
 }

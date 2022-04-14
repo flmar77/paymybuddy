@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://thymeleaf.org"
+      lang="en-us">
 <head>
     <meta charset="UTF-8"/>
     <title>Pay My Buddy - Create Account</title>
@@ -13,26 +15,34 @@
         <h1>Pay My Buddy</h1>
     </div>
 
-    <form th:action="@{/login}" method="post">
+    <h3 th:if="${notcreatedaccount}" class="text-danger p-1">Email already exists - Please use a new one</h3>
+
+    <form method="post" th:action="@{/visitor/createaccount}" th:object="${userModel}">
+
         <!-- Email input -->
         <div class="form-outline">
             <label for="username" class="form-label">Email</label>:
-            <input type="text" id="username" name="username" autofocus="autofocus" class="form-control"/> <br/>
+            <input type="text" id="username" name="username" autofocus="autofocus" class="form-control"
+                   th:field="*{email}"/> <br/>
         </div>
 
         <!-- Password input -->
         <div class="form-outline">
-            <label for="password" class="form-label">Password</label>:
-            <input type="password" id="password" name="password" class="form-control"/> <br/>
+            <div class="form-outline">
+                <label for="password" class="form-label">Password</label>:
+                <input type="password" id="password" name="password" class="form-control" th:field="*{password}"/> <br/>
+            </div>
         </div>
 
         <!-- Submit button -->
         <div class="m-auto w-25">
-            <a href="/visitor/createdaccount" class="btn btn-primary w-100 p-3">Create account</a>
+            <input type="submit" value="Create account" class="btn btn-primary w-100"/>
         </div>
 
     </form>
+
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
         integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
         crossorigin="anonymous"></script>
