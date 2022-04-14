@@ -15,8 +15,12 @@ public class MonetizeTest {
     private Monetize monetize;
 
     @Test
-    public void should_returnMonetizedAmount_whenGetMonetizedAmount() {
+    public void should_returnMonetizedAmount_whenGetPositiveMonetizedAmount() {
         assertThat(monetize.getMonetizedAmount(103)).isEqualTo(0.51f);
     }
 
+    @Test
+    public void should_returnMonetizedAmount_whenGetNegativeMonetizedAmount() {
+        assertThat(monetize.getMonetizedAmount(-103)).isEqualTo(0.51f);
+    }
 }

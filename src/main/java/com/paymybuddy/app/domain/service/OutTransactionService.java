@@ -36,13 +36,23 @@ public class OutTransactionService {
         outTransactionEntityToSave.setDescription(outTransactionModelToSave.getDescription());
         outTransactionEntityToSave.setIban(outTransactionModelToSave.getIban());
         outTransactionEntityToSave.setMonetizedAmount(monetize.getMonetizedAmount(outTransactionModelToSave.getTransferredAmount()));
-        outTransactionEntityToSave.setTransferredAmount(outTransactionModelToSave.getTransferredAmount() - outTransactionEntityToSave.getMonetizedAmount());
+        if (outTransactionModelToSave.getTransferredAmount() < 0) {
+            outTransactionEntityToSave.setTransferredAmount(outTransactionModelToSave.getTransferredAmount() + outTransactionEntityToSave.getMonetizedAmount());
+        } else {
+            outTransactionEntityToSave.setTransferredAmount(outTransactionModelToSave.getTransferredAmount() - outTransactionEntityToSave.getMonetizedAmount());
+        }
+
         outTransactionEntityToSave.setUserId(userService.getUserIdByEmail(outTransactionModelToSave.getUserEmail()));
 
         OutTransactionEntity outTransactionEntitySaved = outTransactionRepository.save(outTransactionEntityToSave);
 
         // update balance
-        userService.updateUserBalanceByEmail(outTransactionModelToSave.getUserEmail(), outTransactionModelToSave.getTransferredAmount());
+        if (outTransactionModelToSave.getTransferredAmount() < 0) {
+            userService.updateUserBalanceByEmail(outTransactionModelToSave.getUserEmail(), outTransactionModelToSave.getTransferredAmount());
+        } else {
+            userService.updateUserBalanceByEmail(outTransactionModelToSave.getUserEmail(), outTransactionEntityToSave.getTransferredAmount());
+        }
+
 
         return mapOutTransactionEntityToOutTransactionModel(outTransactionEntitySaved);
     }

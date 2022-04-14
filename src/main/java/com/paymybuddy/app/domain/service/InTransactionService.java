@@ -43,7 +43,7 @@ public class InTransactionService {
 
         // update balance
         userService.updateUserBalanceByEmail(inTransactionModelToSave.getConnectorEmail(), -(inTransactionModelToSave.getGivenAmount()));
-        userService.updateUserBalanceByEmail(inTransactionModelToSave.getConnectedEmail(), inTransactionModelToSave.getGivenAmount());
+        userService.updateUserBalanceByEmail(inTransactionModelToSave.getConnectedEmail(), inTransactionEntityToSave.getGivenAmount());
 
         return mapInTransactionEntityToInTransactionModel(inTransactionEntitySaved);
 
