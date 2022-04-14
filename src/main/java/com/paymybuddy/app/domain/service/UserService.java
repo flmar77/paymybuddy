@@ -114,13 +114,10 @@ public class UserService implements UserDetailsService {
         List<String> notAvailableEmails = getUserByEmail(userEmail).getConnectedEmails();
         notAvailableEmails.add(userEmail);
 
-        List<String> availableEmails = allEmails.stream()
+        return allEmails.stream()
                 .filter(notAvailableEmail -> notAvailableEmails.stream()
                         .noneMatch(allEmail -> allEmail.equals(notAvailableEmail)))
                 .collect(Collectors.toList());
-        System.out.println(availableEmails);
-
-        return availableEmails;
     }
 
     private UserModel mapUserEntityToUserModel(UserEntity userEntity) {
