@@ -125,6 +125,7 @@ public class UserService implements UserDetailsService {
         userModel.setId(userEntity.getId());
         userModel.setEmail(userEntity.getEmail());
         userModel.setPassword(userEntity.getPassword());
+        userModel.setBalance(userEntity.getBalance());
         userModel.setConnectedEmails(userEntity.getConnectedUsers().stream()
                 .map(UserEntity::getEmail)
                 .collect(Collectors.toList()));

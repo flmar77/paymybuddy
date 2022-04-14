@@ -48,6 +48,7 @@ public class UserController {
     public String userGetTransferIn(Authentication authentication,
                                     Model model) {
         UserModel userModel = userService.getUserByEmail(authentication.getName());
+        model.addAttribute("balance", userModel.getBalance());
         model.addAttribute("inTransactionModel", new InTransactionModel());
         model.addAttribute("connectedEmails", userModel.getConnectedEmails());
         model.addAttribute("inTransactionModelList", userModel.getInTransactionModelList());
@@ -99,6 +100,7 @@ public class UserController {
     public String userGetTransferOut(Authentication authentication,
                                      Model model) {
         UserModel userModel = userService.getUserByEmail(authentication.getName());
+        model.addAttribute("balance", userModel.getBalance());
         model.addAttribute("outTransactionModel", new OutTransactionModel());
         model.addAttribute("outTransactionModelList", userModel.getOutTransactionModelList());
 
