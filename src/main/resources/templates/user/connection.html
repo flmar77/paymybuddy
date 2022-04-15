@@ -48,6 +48,9 @@
             <h3 th:if="${connectionDone}" class="text-success text-center p-1">
                 Congratulations ! Your new connection has been registered
             </h3>
+            <h3 th:if="${connectionNotDone}" class="text-danger text-center p-1">
+                Your new connection can't be registered because of missing connection
+            </h3>
 
         </div>
 

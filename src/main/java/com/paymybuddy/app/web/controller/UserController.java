@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @Controller
@@ -64,12 +65,14 @@ public class UserController {
             InTransactionModel inTransactionModelSaved = inTransactionService.createInTransaction(inTransactionModelToSave);
             log.debug("inTransaction created with id : " + inTransactionModelSaved.getId());
             redirectAttributes.addFlashAttribute("inTransactionDone", true);
-            return "redirect:/user/transferin";
+        } catch (NoSuchElementException e) {
+            log.debug("inTransaction not done because of missing connected user");
+            redirectAttributes.addFlashAttribute("inTransactionNotDoneForMissingConnectedEmail", true);
         } catch (UnsupportedOperationException e) {
             log.debug("inTransaction not done because of insufficient balance");
-            redirectAttributes.addFlashAttribute("inTransactionNotDone", true);
-            return "redirect:/user/transferin";
+            redirectAttributes.addFlashAttribute("inTransactionNotDoneForInsufficientBalance", true);
         }
+        return "redirect:/user/transferin";
 
     }
 
@@ -90,9 +93,14 @@ public class UserController {
     public String userPostConnection(Authentication authentication,
                                      @ModelAttribute StringFormDto stringFormDto,
                                      RedirectAttributes redirectAttributes) {
-        ConnectionEntity connectionEntitySaved = connectionService.CreateConnectionFromEmails(authentication.getName(), stringFormDto.getText());
-        log.debug("connection created for connector/connectedIds : " + connectionEntitySaved.getConnectorId() + "/" + connectionEntitySaved.getConnectedId());
-        redirectAttributes.addFlashAttribute("connectionDone", true);
+        try {
+            ConnectionEntity connectionEntitySaved = connectionService.CreateConnectionFromEmails(authentication.getName(), stringFormDto.getText());
+            log.debug("connection created for connector/connectedIds : " + connectionEntitySaved.getConnectorId() + "/" + connectionEntitySaved.getConnectedId());
+            redirectAttributes.addFlashAttribute("connectionDone", true);
+        } catch (NoSuchElementException e) {
+            log.debug("connection not created because of missing connected user");
+            redirectAttributes.addFlashAttribute("connectionNotDone", true);
+        }
         return "redirect:/user/connection";
     }
 

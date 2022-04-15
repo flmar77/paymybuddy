@@ -68,7 +68,10 @@
             <h3 th:if="${inTransactionDone}" class="text-success text-center p-1">
                 Congratulations ! Your transaction has been registered (with a 0.5% tax)
             </h3>
-            <h3 th:if="${inTransactionNotDone}" class="text-danger text-center p-1">
+            <h3 th:if="${inTransactionNotDoneForMissingConnectedEmail}" class="text-danger text-center p-1">
+                Your transaction can't be registered because of missing connection
+            </h3>
+            <h3 th:if="${inTransactionNotDoneForInsufficientBalance}" class="text-danger text-center p-1">
                 Your transaction can't be registered because of insufficient balance
             </h3>
 
