@@ -41,7 +41,6 @@ public class OutTransactionService {
         } else {
             outTransactionEntityToSave.setTransferredAmount(outTransactionModelToSave.getTransferredAmount() - outTransactionEntityToSave.getMonetizedAmount());
         }
-
         outTransactionEntityToSave.setUserId(userService.getUserIdByEmail(outTransactionModelToSave.getUserEmail()));
 
         OutTransactionEntity outTransactionEntitySaved = outTransactionRepository.save(outTransactionEntityToSave);
@@ -57,7 +56,7 @@ public class OutTransactionService {
         return mapOutTransactionEntityToOutTransactionModel(outTransactionEntitySaved);
     }
 
-    public List<OutTransactionModel> mapOutTransactionEntityListToOuTransactionModelList(List<OutTransactionEntity> outTransactionEntityList) {
+    public List<OutTransactionModel> mapOutTransactionEntityListToOutTransactionModelList(List<OutTransactionEntity> outTransactionEntityList) {
         if (outTransactionEntityList == null) {
             return null;
         }

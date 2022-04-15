@@ -130,7 +130,7 @@ public class UserService implements UserDetailsService {
                 .map(UserEntity::getEmail)
                 .collect(Collectors.toList()));
         userModel.setInTransactionModelList(inTransactionService.mapInTransactionEntityListToInTransactionModelList(userEntity.getInTransactionEntityList()));
-        userModel.setOutTransactionModelList(outTransactionService.mapOutTransactionEntityListToOuTransactionModelList(userEntity.getOutTransactionEntityList()));
+        userModel.setOutTransactionModelList(outTransactionService.mapOutTransactionEntityListToOutTransactionModelList(userEntity.getOutTransactionEntityList()));
         userModel.setRoles(userEntity.getAuthorityEntityList().stream()
                 .map(AuthorityEntity::getAuthority)
                 .collect(Collectors.toList()));

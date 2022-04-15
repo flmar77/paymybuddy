@@ -1,4 +1,4 @@
-package com.paymybuddy.app.unittests;
+package com.paymybuddy.app.unittests.domain;
 
 import com.paymybuddy.app.domain.helper.MonetizeHelper;
 import org.junit.jupiter.api.Test;
