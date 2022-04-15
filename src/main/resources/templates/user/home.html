@@ -18,8 +18,12 @@
 <!-- navbar -->
 <div th:replace="fragments/header :: header"></div>
 <!-- breadcrumb -->
-<div class="container-fluid p-3 bg-light">
-    <p><span style="color:#0000FF">home / </span></p>
+<div class="container-fluid p-2 pb-1 bg-light">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active" aria-current="page">Home</li>
+        </ol>
+    </nav>
 </div>
 
 <div class="container-lg pt-5">

@@ -18,8 +18,13 @@
 <!-- navbar -->
 <div th:replace="fragments/header :: header"></div>
 <!-- breadcrumb -->
-<div class="container-fluid p-3 bg-light">
-    <p><span style="color:#0000FF">home / </span><span style="color:#808080">transfer out</span></p>
+<div class="container-fluid p-2 pb-1 bg-light">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/user/home">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Transfer Out</li>
+        </ol>
+    </nav>
 </div>
 
 <!-- send money -->

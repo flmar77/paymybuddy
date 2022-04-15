@@ -18,8 +18,14 @@
 <!-- navbar -->
 <div th:replace="fragments/header :: header"></div>
 <!-- breadcrumb -->
-<div class="container-fluid p-3 bg-light">
-    <p><span style="color:#0000FF">home / </span><span style="color:#808080">transfer in / connection</span></p>
+<div class="container-fluid p-2 pb-1 bg-light">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/user/home">Home</a></li>
+            <li class="breadcrumb-item"><a href="/user/transferin">Transfer In</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Connection</li>
+        </ol>
+    </nav>
 </div>
 
 <!-- add connection -->
