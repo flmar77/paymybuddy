@@ -1,6 +1,6 @@
 package com.paymybuddy.app.unittests;
 
-import com.paymybuddy.app.domain.helper.Monetize;
+import com.paymybuddy.app.domain.helper.MonetizeHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,18 +9,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class MonetizeTest {
+public class MonetizeHelperTest {
 
     @InjectMocks
-    private Monetize monetize;
+    private MonetizeHelper monetizeHelper;
 
     @Test
     public void should_returnMonetizedAmount_whenGetPositiveMonetizedAmount() {
-        assertThat(monetize.getMonetizedAmount(103)).isEqualTo(0.51f);
+        assertThat(monetizeHelper.getMonetizedAmount(103)).isEqualTo(0.51f);
     }
 
     @Test
     public void should_returnMonetizedAmount_whenGetNegativeMonetizedAmount() {
-        assertThat(monetize.getMonetizedAmount(-103)).isEqualTo(0.51f);
+        assertThat(monetizeHelper.getMonetizedAmount(-103)).isEqualTo(0.51f);
     }
 }

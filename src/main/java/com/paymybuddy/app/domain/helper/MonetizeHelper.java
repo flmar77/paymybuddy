@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Service
-public class Monetize {
+public class MonetizeHelper {
 
     public static final float MONETIZED_PERCENT = 0.005F;
 
