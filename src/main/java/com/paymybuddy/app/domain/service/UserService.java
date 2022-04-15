@@ -3,6 +3,7 @@ package com.paymybuddy.app.domain.service;
 import com.paymybuddy.app.dal.entity.AuthorityEntity;
 import com.paymybuddy.app.dal.entity.UserEntity;
 import com.paymybuddy.app.dal.repository.UserRepository;
+import com.paymybuddy.app.domain.helper.AuthorityHelper;
 import com.paymybuddy.app.domain.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +29,7 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
-    private AuthorityService authorityService;
+    private AuthorityHelper authorityHelper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -66,7 +67,7 @@ public class UserService implements UserDetailsService {
         userEntityToSave.setEnabled(true);
         UserEntity userEntitySaved = userRepository.save(userEntityToSave);
 
-        AuthorityEntity authorityEntitySaved = authorityService.createAuthority(userEntitySaved.getId());
+        AuthorityEntity authorityEntitySaved = authorityHelper.createAuthority(userEntitySaved.getId());
         userEntitySaved.setAuthorityEntityList(Collections.singletonList(authorityEntitySaved));
 
         return mapUserEntityToUserModel(userEntitySaved);

@@ -2,7 +2,7 @@ package com.paymybuddy.app.unittests.domain;
 
 import com.paymybuddy.app.dal.entity.ConnectionEntity;
 import com.paymybuddy.app.dal.repository.ConnectionRepository;
-import com.paymybuddy.app.domain.service.ConnectionService;
+import com.paymybuddy.app.domain.helper.ConnectionHelper;
 import com.paymybuddy.app.domain.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,10 +16,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ConnectionServiceTest {
+public class ConnectionHelperTest {
 
     @InjectMocks
-    private ConnectionService connectionService;
+    private ConnectionHelper connectionHelper;
 
     @Mock
     private ConnectionRepository connectionRepository;
@@ -32,7 +32,7 @@ public class ConnectionServiceTest {
         when(connectionRepository.save(any())).thenReturn(getFakeConnectionEntity());
         when(userService.getUserIdByEmail(anyString())).thenReturn(1);
 
-        ConnectionEntity connectionEntity = connectionService.CreateConnectionFromEmails("xxx", "yyy");
+        ConnectionEntity connectionEntity = connectionHelper.CreateConnectionFromEmails("xxx", "yyy");
 
         assertThat(connectionEntity).isNotNull();
         assertThat(connectionEntity.getConnectorId()).isEqualTo(1);
@@ -41,6 +41,7 @@ public class ConnectionServiceTest {
 
     private ConnectionEntity getFakeConnectionEntity() {
         ConnectionEntity connectionEntity = new ConnectionEntity();
+        connectionEntity.setId(1);
         connectionEntity.setConnectorId(1);
         connectionEntity.setConnectedId(2);
         return connectionEntity;

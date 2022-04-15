@@ -2,7 +2,7 @@ package com.paymybuddy.app.unittests.domain;
 
 import com.paymybuddy.app.dal.entity.AuthorityEntity;
 import com.paymybuddy.app.dal.repository.AuthorityRepository;
-import com.paymybuddy.app.domain.service.AuthorityService;
+import com.paymybuddy.app.domain.helper.AuthorityHelper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,10 +14,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthorityServiceTest {
+public class AuthorityHelperTest {
 
     @InjectMocks
-    private AuthorityService authorityService;
+    private AuthorityHelper authorityHelper;
 
     @Mock
     private AuthorityRepository authorityRepository;
@@ -26,7 +26,7 @@ public class AuthorityServiceTest {
     public void should_returnSavedAuthority_whenCreateAuthority() {
         when(authorityRepository.save(any())).thenReturn(getFakeAuthorityEntity());
 
-        AuthorityEntity authorityEntity = authorityService.createAuthority(1);
+        AuthorityEntity authorityEntity = authorityHelper.createAuthority(1);
 
         assertThat(authorityEntity).isNotNull();
         assertThat(authorityEntity.getAuthority()).isEqualTo("USER");
@@ -36,6 +36,7 @@ public class AuthorityServiceTest {
 
     private AuthorityEntity getFakeAuthorityEntity() {
         AuthorityEntity authorityEntity = new AuthorityEntity();
+        authorityEntity.setId(1);
         authorityEntity.setUserId(1);
         authorityEntity.setAuthority("USER");
         return authorityEntity;

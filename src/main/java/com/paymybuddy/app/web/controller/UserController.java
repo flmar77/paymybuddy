@@ -1,10 +1,10 @@
 package com.paymybuddy.app.web.controller;
 
 import com.paymybuddy.app.dal.entity.ConnectionEntity;
+import com.paymybuddy.app.domain.helper.ConnectionHelper;
 import com.paymybuddy.app.domain.model.InTransactionModel;
 import com.paymybuddy.app.domain.model.OutTransactionModel;
 import com.paymybuddy.app.domain.model.UserModel;
-import com.paymybuddy.app.domain.service.ConnectionService;
 import com.paymybuddy.app.domain.service.InTransactionService;
 import com.paymybuddy.app.domain.service.OutTransactionService;
 import com.paymybuddy.app.domain.service.UserService;
@@ -36,7 +36,7 @@ public class UserController {
     private OutTransactionService outTransactionService;
 
     @Autowired
-    private ConnectionService connectionService;
+    private ConnectionHelper connectionHelper;
 
     @GetMapping("/user/home")
     public String userHome(Authentication authentication,
@@ -94,7 +94,7 @@ public class UserController {
                                      @ModelAttribute StringFormDto stringFormDto,
                                      RedirectAttributes redirectAttributes) {
         try {
-            ConnectionEntity connectionEntitySaved = connectionService.CreateConnectionFromEmails(authentication.getName(), stringFormDto.getText());
+            ConnectionEntity connectionEntitySaved = connectionHelper.CreateConnectionFromEmails(authentication.getName(), stringFormDto.getText());
             log.debug("connection created for connector/connectedIds : " + connectionEntitySaved.getConnectorId() + "/" + connectionEntitySaved.getConnectedId());
             redirectAttributes.addFlashAttribute("connectionDone", true);
         } catch (NoSuchElementException e) {
@@ -140,7 +140,7 @@ public class UserController {
 
     @GetMapping("/user/contact")
     public String userContact() {
-        return "user/contact";
+        return "/user/contact";
     }
 
 }

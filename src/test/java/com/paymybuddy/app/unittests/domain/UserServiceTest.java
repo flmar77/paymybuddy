@@ -3,8 +3,8 @@ package com.paymybuddy.app.unittests.domain;
 import com.paymybuddy.app.dal.entity.AuthorityEntity;
 import com.paymybuddy.app.dal.entity.UserEntity;
 import com.paymybuddy.app.dal.repository.UserRepository;
+import com.paymybuddy.app.domain.helper.AuthorityHelper;
 import com.paymybuddy.app.domain.model.UserModel;
-import com.paymybuddy.app.domain.service.AuthorityService;
 import com.paymybuddy.app.domain.service.InTransactionService;
 import com.paymybuddy.app.domain.service.OutTransactionService;
 import com.paymybuddy.app.domain.service.UserService;
@@ -38,7 +38,7 @@ public class UserServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private AuthorityService authorityService;
+    private AuthorityHelper authorityHelper;
 
     @Mock
     private InTransactionService inTransactionService;
@@ -77,7 +77,7 @@ public class UserServiceTest {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(anyString())).thenReturn("xxx");
         when(userRepository.save(any())).thenReturn(getFakeUserEntity());
-        when(authorityService.createAuthority(any())).thenReturn(getFakeAuthority());
+        when(authorityHelper.createAuthority(any())).thenReturn(getFakeAuthority());
 
         UserModel userModel = userService.createUser(getFakeUserModel());
 
@@ -176,14 +176,13 @@ public class UserServiceTest {
 
     private UserEntity getFakeUserEntity() {
         UserEntity userEntity = new UserEntity();
-        AuthorityEntity authorityEntity = new AuthorityEntity();
-        authorityEntity.setAuthority("USER");
-        userEntity.setAuthorityEntityList(Collections.singletonList(authorityEntity));
+        userEntity.setId(1);
         userEntity.setEmail("xxx@mail.com");
         userEntity.setPassword("xxx");
-        userEntity.setId(1);
+        userEntity.setEnabled(true);
         userEntity.setBalance(500);
         userEntity.setConnectedUsers(new ArrayList<>());
+        userEntity.setAuthorityEntityList(Collections.singletonList(getFakeAuthority()));
         return userEntity;
     }
 
