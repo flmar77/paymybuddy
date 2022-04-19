@@ -125,13 +125,11 @@ public class UserController {
             OutTransactionModel outTransactionModelSaved = outTransactionService.createOutTransaction(outTransactionModelToSave);
             log.debug("outTransaction created with id : " + outTransactionModelSaved.getId());
             redirectAttributes.addFlashAttribute("outTransactionDone", true);
-            return "redirect:/user/transferout";
         } catch (UnsupportedOperationException e) {
             log.debug("outTransaction not done because of insufficient balance");
             redirectAttributes.addFlashAttribute("outTransactionNotDone", true);
-            return "redirect:/user/transferout";
         }
-
+        return "redirect:/user/transferout";
     }
 
     @GetMapping("/user/profile")
