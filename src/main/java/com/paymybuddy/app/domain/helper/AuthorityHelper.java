@@ -1,4 +1,4 @@
-package com.paymybuddy.app.domain.service;
+package com.paymybuddy.app.domain.helper;
 
 import com.paymybuddy.app.dal.entity.AuthorityEntity;
 import com.paymybuddy.app.dal.repository.AuthorityRepository;
@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AuthorityService {
+public class AuthorityHelper {
 
     @Autowired
     private AuthorityRepository authorityRepository;

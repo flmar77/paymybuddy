@@ -2,7 +2,7 @@ package com.paymybuddy.app.domain.service;
 
 import com.paymybuddy.app.dal.entity.OutTransactionEntity;
 import com.paymybuddy.app.dal.repository.OutTransactionRepository;
-import com.paymybuddy.app.domain.helper.Monetize;
+import com.paymybuddy.app.domain.helper.MonetizeHelper;
 import com.paymybuddy.app.domain.model.OutTransactionModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class OutTransactionService {
     private UserService userService;
 
     @Autowired
-    private Monetize monetize;
+    private MonetizeHelper monetizeHelper;
 
     @Transactional
     public OutTransactionModel createOutTransaction(OutTransactionModel outTransactionModelToSave) {
@@ -35,19 +35,28 @@ public class OutTransactionService {
         OutTransactionEntity outTransactionEntityToSave = new OutTransactionEntity();
         outTransactionEntityToSave.setDescription(outTransactionModelToSave.getDescription());
         outTransactionEntityToSave.setIban(outTransactionModelToSave.getIban());
-        outTransactionEntityToSave.setMonetizedAmount(monetize.getMonetizedAmount(outTransactionModelToSave.getTransferredAmount()));
-        outTransactionEntityToSave.setTransferredAmount(outTransactionModelToSave.getTransferredAmount() - outTransactionEntityToSave.getMonetizedAmount());
+        outTransactionEntityToSave.setMonetizedAmount(monetizeHelper.getMonetizedAmount(outTransactionModelToSave.getTransferredAmount()));
+        if (outTransactionModelToSave.getTransferredAmount() < 0) {
+            outTransactionEntityToSave.setTransferredAmount(outTransactionModelToSave.getTransferredAmount() + outTransactionEntityToSave.getMonetizedAmount());
+        } else {
+            outTransactionEntityToSave.setTransferredAmount(outTransactionModelToSave.getTransferredAmount() - outTransactionEntityToSave.getMonetizedAmount());
+        }
         outTransactionEntityToSave.setUserId(userService.getUserIdByEmail(outTransactionModelToSave.getUserEmail()));
 
         OutTransactionEntity outTransactionEntitySaved = outTransactionRepository.save(outTransactionEntityToSave);
 
         // update balance
-        userService.updateUserBalanceByEmail(outTransactionModelToSave.getUserEmail(), outTransactionModelToSave.getTransferredAmount());
+        if (outTransactionModelToSave.getTransferredAmount() < 0) {
+            userService.updateUserBalanceByEmail(outTransactionModelToSave.getUserEmail(), outTransactionModelToSave.getTransferredAmount());
+        } else {
+            userService.updateUserBalanceByEmail(outTransactionModelToSave.getUserEmail(), outTransactionEntityToSave.getTransferredAmount());
+        }
+
 
         return mapOutTransactionEntityToOutTransactionModel(outTransactionEntitySaved);
     }
 
-    public List<OutTransactionModel> mapOutTransactionEntityListToOuTransactionModelList(List<OutTransactionEntity> outTransactionEntityList) {
+    public List<OutTransactionModel> mapOutTransactionEntityListToOutTransactionModelList(List<OutTransactionEntity> outTransactionEntityList) {
         if (outTransactionEntityList == null) {
             return null;
         }

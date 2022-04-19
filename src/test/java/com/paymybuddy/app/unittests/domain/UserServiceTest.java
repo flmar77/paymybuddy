@@ -1,10 +1,10 @@
-package com.paymybuddy.app.unittests;
+package com.paymybuddy.app.unittests.domain;
 
 import com.paymybuddy.app.dal.entity.AuthorityEntity;
 import com.paymybuddy.app.dal.entity.UserEntity;
 import com.paymybuddy.app.dal.repository.UserRepository;
+import com.paymybuddy.app.domain.helper.AuthorityHelper;
 import com.paymybuddy.app.domain.model.UserModel;
-import com.paymybuddy.app.domain.service.AuthorityService;
 import com.paymybuddy.app.domain.service.InTransactionService;
 import com.paymybuddy.app.domain.service.OutTransactionService;
 import com.paymybuddy.app.domain.service.UserService;
@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -37,7 +38,7 @@ public class UserServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private AuthorityService authorityService;
+    private AuthorityHelper authorityHelper;
 
     @Mock
     private InTransactionService inTransactionService;
@@ -54,10 +55,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void should_returnSomething_whenLoadExistingUserByUsername() {
+    public void should_returnValidUserDetails_whenLoadExistingUserByUsername() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(getFakeUserEntity()));
 
-        assertThat(userService.loadUserByUsername(anyString())).isNotNull();
+        UserDetails userDetails = userService.loadUserByUsername(anyString());
+
+        assertThat(userDetails).isNotNull();
+        assertThat(userDetails.getUsername()).isEqualTo(getFakeUserEntity().getEmail());
     }
 
     @Test
@@ -69,13 +73,16 @@ public class UserServiceTest {
     }
 
     @Test
-    public void should_returnSomething_whenCreateNewUser() {
+    public void should_returnValidUserModel_whenCreateNewUser() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(anyString())).thenReturn("xxx");
         when(userRepository.save(any())).thenReturn(getFakeUserEntity());
-        when(authorityService.createAuthority(any())).thenReturn(getFakeAuthority());
+        when(authorityHelper.createAuthority(any())).thenReturn(getFakeAuthority());
 
-        assertThat(userService.createUser(getFakeUserModel())).isNotNull();
+        UserModel userModel = userService.createUser(getFakeUserModel());
+
+        assertThat(userModel).isNotNull();
+        assertThat(userModel.getEmail()).isEqualTo(getFakeUserModel().getEmail());
     }
 
     @Test
@@ -87,10 +94,13 @@ public class UserServiceTest {
     }
 
     @Test
-    public void should_returnSomething_whenGetExistingUserByEmail() {
+    public void should_returnValidUserModel_whenGetExistingUserByEmail() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(getFakeUserEntity()));
 
-        assertThat(userService.getUserByEmail(anyString())).isNotNull();
+        UserModel userModel = userService.getUserByEmail(anyString());
+
+        assertThat(userModel).isNotNull();
+        assertThat(userModel.getEmail()).isEqualTo(getFakeUserModel().getEmail());
     }
 
     @Test
@@ -163,17 +173,16 @@ public class UserServiceTest {
 
         assertThat(userService.getUserAvailableEmailsByEmail("xxx@mail.com")).isEqualTo(Collections.singletonList("yyy@mail.com"));
     }
-    
+
     private UserEntity getFakeUserEntity() {
         UserEntity userEntity = new UserEntity();
-        AuthorityEntity authorityEntity = new AuthorityEntity();
-        authorityEntity.setAuthority("USER");
-        userEntity.setAuthorityEntityList(Collections.singletonList(authorityEntity));
+        userEntity.setId(1);
         userEntity.setEmail("xxx@mail.com");
         userEntity.setPassword("xxx");
-        userEntity.setId(1);
+        userEntity.setEnabled(true);
         userEntity.setBalance(500);
         userEntity.setConnectedUsers(new ArrayList<>());
+        userEntity.setAuthorityEntityList(Collections.singletonList(getFakeAuthority()));
         return userEntity;
     }
 

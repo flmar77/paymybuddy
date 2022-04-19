@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityExistsException;
 
+@SuppressWarnings({"SameReturnValue", "SpringMVCViewInspection"})
 @Slf4j
 @Controller
 public class VisitorController {

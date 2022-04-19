@@ -2,7 +2,7 @@ package com.paymybuddy.app.domain.service;
 
 import com.paymybuddy.app.dal.entity.InTransactionEntity;
 import com.paymybuddy.app.dal.repository.InTransactionRepository;
-import com.paymybuddy.app.domain.helper.Monetize;
+import com.paymybuddy.app.domain.helper.MonetizeHelper;
 import com.paymybuddy.app.domain.model.InTransactionModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class InTransactionService {
     private UserService userService;
 
     @Autowired
-    private Monetize monetize;
+    private MonetizeHelper monetizeHelper;
 
     @Transactional
     public InTransactionModel createInTransaction(InTransactionModel inTransactionModelToSave) throws UnsupportedOperationException {
@@ -34,7 +34,7 @@ public class InTransactionService {
         // add InTransaction
         InTransactionEntity inTransactionEntityToSave = new InTransactionEntity();
         inTransactionEntityToSave.setDescription(inTransactionModelToSave.getDescription());
-        inTransactionEntityToSave.setMonetizedAmount(monetize.getMonetizedAmount(inTransactionModelToSave.getGivenAmount()));
+        inTransactionEntityToSave.setMonetizedAmount(monetizeHelper.getMonetizedAmount(inTransactionModelToSave.getGivenAmount()));
         inTransactionEntityToSave.setGivenAmount(inTransactionModelToSave.getGivenAmount() - inTransactionEntityToSave.getMonetizedAmount());
         inTransactionEntityToSave.setConnectorId(userService.getUserIdByEmail(inTransactionModelToSave.getConnectorEmail()));
         inTransactionEntityToSave.setConnectedId(userService.getUserIdByEmail(inTransactionModelToSave.getConnectedEmail()));
@@ -43,7 +43,7 @@ public class InTransactionService {
 
         // update balance
         userService.updateUserBalanceByEmail(inTransactionModelToSave.getConnectorEmail(), -(inTransactionModelToSave.getGivenAmount()));
-        userService.updateUserBalanceByEmail(inTransactionModelToSave.getConnectedEmail(), inTransactionModelToSave.getGivenAmount());
+        userService.updateUserBalanceByEmail(inTransactionModelToSave.getConnectedEmail(), inTransactionEntityToSave.getGivenAmount());
 
         return mapInTransactionEntityToInTransactionModel(inTransactionEntitySaved);
 

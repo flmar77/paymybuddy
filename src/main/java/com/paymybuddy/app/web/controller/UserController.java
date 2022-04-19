@@ -1,10 +1,10 @@
 package com.paymybuddy.app.web.controller;
 
 import com.paymybuddy.app.dal.entity.ConnectionEntity;
+import com.paymybuddy.app.domain.helper.ConnectionHelper;
 import com.paymybuddy.app.domain.model.InTransactionModel;
 import com.paymybuddy.app.domain.model.OutTransactionModel;
 import com.paymybuddy.app.domain.model.UserModel;
-import com.paymybuddy.app.domain.service.ConnectionService;
 import com.paymybuddy.app.domain.service.InTransactionService;
 import com.paymybuddy.app.domain.service.OutTransactionService;
 import com.paymybuddy.app.domain.service.UserService;
@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
+@SuppressWarnings({"SameReturnValue", "SpringMVCViewInspection"})
 @Slf4j
 @Controller
 public class UserController {
@@ -35,7 +37,7 @@ public class UserController {
     private OutTransactionService outTransactionService;
 
     @Autowired
-    private ConnectionService connectionService;
+    private ConnectionHelper connectionHelper;
 
     @GetMapping("/user/home")
     public String userHome(Authentication authentication,
@@ -48,6 +50,7 @@ public class UserController {
     public String userGetTransferIn(Authentication authentication,
                                     Model model) {
         UserModel userModel = userService.getUserByEmail(authentication.getName());
+        model.addAttribute("balance", userModel.getBalance());
         model.addAttribute("inTransactionModel", new InTransactionModel());
         model.addAttribute("connectedEmails", userModel.getConnectedEmails());
         model.addAttribute("inTransactionModelList", userModel.getInTransactionModelList());
@@ -63,12 +66,14 @@ public class UserController {
             InTransactionModel inTransactionModelSaved = inTransactionService.createInTransaction(inTransactionModelToSave);
             log.debug("inTransaction created with id : " + inTransactionModelSaved.getId());
             redirectAttributes.addFlashAttribute("inTransactionDone", true);
-            return "redirect:/user/transferin";
+        } catch (NoSuchElementException e) {
+            log.debug("inTransaction not done because of missing connected user");
+            redirectAttributes.addFlashAttribute("inTransactionNotDoneForMissingConnectedEmail", true);
         } catch (UnsupportedOperationException e) {
             log.debug("inTransaction not done because of insufficient balance");
-            redirectAttributes.addFlashAttribute("inTransactionNotDone", true);
-            return "redirect:/user/transferin";
+            redirectAttributes.addFlashAttribute("inTransactionNotDoneForInsufficientBalance", true);
         }
+        return "redirect:/user/transferin";
 
     }
 
@@ -89,9 +94,14 @@ public class UserController {
     public String userPostConnection(Authentication authentication,
                                      @ModelAttribute StringFormDto stringFormDto,
                                      RedirectAttributes redirectAttributes) {
-        ConnectionEntity connectionEntitySaved = connectionService.CreateConnectionFromEmails(authentication.getName(), stringFormDto.getText());
-        log.debug("connection created for connector/connectedIds : " + connectionEntitySaved.getConnectorId() + "/" + connectionEntitySaved.getConnectedId());
-        redirectAttributes.addFlashAttribute("connectionDone", true);
+        try {
+            ConnectionEntity connectionEntitySaved = connectionHelper.CreateConnectionFromEmails(authentication.getName(), stringFormDto.getText());
+            log.debug("connection created for connector/connectedIds : " + connectionEntitySaved.getConnectorId() + "/" + connectionEntitySaved.getConnectedId());
+            redirectAttributes.addFlashAttribute("connectionDone", true);
+        } catch (NoSuchElementException e) {
+            log.debug("connection not created because of missing connected user");
+            redirectAttributes.addFlashAttribute("connectionNotDone", true);
+        }
         return "redirect:/user/connection";
     }
 
@@ -99,6 +109,7 @@ public class UserController {
     public String userGetTransferOut(Authentication authentication,
                                      Model model) {
         UserModel userModel = userService.getUserByEmail(authentication.getName());
+        model.addAttribute("balance", userModel.getBalance());
         model.addAttribute("outTransactionModel", new OutTransactionModel());
         model.addAttribute("outTransactionModelList", userModel.getOutTransactionModelList());
 
@@ -130,7 +141,7 @@ public class UserController {
 
     @GetMapping("/user/contact")
     public String userContact() {
-        return "user/contact";
+        return "/user/contact";
     }
 
 }
