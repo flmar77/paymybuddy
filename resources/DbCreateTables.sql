@@ -15,8 +15,8 @@ DROP TABLE IF EXISTS authority CASCADE;
 CREATE TABLE authority
 (
     id        serial PRIMARY KEY,
-    user_id   int  NOT NULL,
     authority text NOT NULL DEFAULT 'USER',
+    user_id   int  NOT NULL,
     FOREIGN KEY (user_id) REFERENCES "user" (id)
 );
 
